@@ -666,7 +666,8 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {error && (
+                    {/* Error message */}
+                    {error && !isCreating && (
                       <p className="text-red-500 text-sm flex items-center">
                         <span className="i-lucide-alert-circle mr-1" />
                         {error}
