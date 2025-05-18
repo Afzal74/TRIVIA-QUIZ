@@ -111,10 +111,10 @@ export default function CreateRoomForm() {
   }
 
   return (
-    <div className="w-full max-w-lg space-y-6 p-6 bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800">
+    <div className="w-full max-w-lg space-y-6 p-6 bg-gray-900/40 backdrop-blur-xl rounded-xl border border-gray-800/50 shadow-lg">
       <div>
         <h2 className="text-2xl font-bold text-white mb-2">Create a New Quiz Room</h2>
-        <p className="text-gray-400">Set up your room and invite friends to join!</p>
+        <p className="text-gray-300">Set up your room and invite friends to join!</p>
       </div>
 
       {/* Name Input */}
@@ -130,7 +130,7 @@ export default function CreateRoomForm() {
             setError("")
           }}
           placeholder="Enter your name"
-          className="bg-gray-800/50 border-gray-700 focus:ring-purple-500"
+          className="bg-gray-800/50 backdrop-blur-sm border-gray-700 focus:ring-purple-500 text-white placeholder-gray-400"
         />
       </div>
 
@@ -149,12 +149,12 @@ export default function CreateRoomForm() {
                 setSelectedDifficulty(id)
                 playSound("click")
               }}
-              className={`p-4 rounded-lg border flex flex-col items-center text-center transition-colors
-                ${className} ${selectedDifficulty === id ? "selected" : ""}`}
+              className={`p-4 rounded-lg border backdrop-blur-sm flex flex-col items-center text-center transition-colors
+                ${className} ${selectedDifficulty === id ? "selected shadow-lg" : ""}`}
             >
               {icon}
-              <span className="mt-1 font-medium">{label}</span>
-              <span className="text-xs text-gray-400 mt-1">{time}</span>
+              <span className="mt-1 font-medium text-white">{label}</span>
+              <span className="text-xs text-gray-300 mt-1">{time}</span>
             </motion.button>
           ))}
         </div>

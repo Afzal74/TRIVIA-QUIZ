@@ -3,15 +3,29 @@
 import type { FC } from "react"
 import { motion, useAnimationControls } from "framer-motion"
 import { useState } from "react"
+import { useTheme } from "@/components/theme-provider"
 
 interface LogoProps {
   className?: string
   animate?: boolean
+  useFixedColors?: boolean
 }
 
-const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
+const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFixedColors = false }) => {
   const [isHovered, setIsHovered] = useState(false)
   const controls = useAnimationControls()
+  const { colors } = useTheme()
+  
+  // Define fixed colors for theme-independent mode
+  const fixedColors = {
+    primary: "147, 51, 234",    // Purple
+    secondary: "236, 72, 153",  // Pink
+    accent: "14, 165, 233"      // Sky blue
+  }
+
+  // Use either fixed colors or theme colors
+  const activeColors = useFixedColors ? fixedColors : colors
+
   const subtitles = [
     "Test Your Knowledge",
     "Challenge Your Mind",
@@ -123,11 +137,19 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
       {/* Enhanced multi-layered animated glow effect */}
       <motion.div
         variants={animate ? primaryGlowVariants : undefined}
-        className="absolute inset-0 blur-2xl bg-gradient-to-r from-purple-500/90 via-pink-500/90 to-cyan-500/90 rounded-full shadow-[0_0_30px_rgba(168,85,247,0.4)]"
+        className="absolute inset-0 blur-2xl"
+        style={{
+          background: `linear-gradient(to right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.accent}, 0.9))`,
+          boxShadow: `0 0 30px rgba(${activeColors.primary}, 0.4)`
+        }}
       />
       <motion.div
         variants={animate ? secondaryGlowVariants : undefined}
-        className="absolute inset-0 blur-3xl bg-gradient-to-r from-cyan-500/70 via-purple-500/70 to-pink-500/70 rounded-full mix-blend-screen shadow-[0_0_40px_rgba(34,211,238,0.4)]"
+        className="absolute inset-0 blur-3xl mix-blend-screen"
+        style={{
+          background: `linear-gradient(to right, rgba(${activeColors.accent}, 0.7), rgba(${activeColors.primary}, 0.7), rgba(${activeColors.secondary}, 0.7))`,
+          boxShadow: `0 0 40px rgba(${activeColors.accent}, 0.4)`
+        }}
       />
       
       {/* Main logo container with enhanced shadow */}
@@ -140,9 +162,11 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
                 key={i}
                 custom={i}
                 variants={animate ? letterVariants : undefined}
-                className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-purple-300 to-purple-600 drop-shadow-[0_2px_4px_rgba(168,85,247,0.4)] transition-all duration-300 group-hover:drop-shadow-[0_4px_8px_rgba(168,85,247,0.6)]"
+                className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
                 style={{
-                  textShadow: "0 0 20px rgba(168,85,247,0.3)"
+                  background: `linear-gradient(to bottom right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.primary}, 0.6))`,
+                  textShadow: `0 0 20px rgba(${activeColors.primary}, 0.3)`,
+                  WebkitBackgroundClip: "text"
                 }}
               >
                 {letter}
@@ -157,9 +181,11 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
                 key={i}
                 custom={i + 4}
                 variants={animate ? letterVariants : undefined}
-                className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-pink-300 to-pink-600 drop-shadow-[0_2px_4px_rgba(236,72,153,0.4)] transition-all duration-300 group-hover:drop-shadow-[0_4px_8px_rgba(236,72,153,0.6)]"
+                className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
                 style={{
-                  textShadow: "0 0 20px rgba(236,72,153,0.3)"
+                  background: `linear-gradient(to bottom right, rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.secondary}, 0.6))`,
+                  textShadow: `0 0 20px rgba(${activeColors.secondary}, 0.3)`,
+                  WebkitBackgroundClip: "text"
                 }}
               >
                 {letter}
@@ -177,7 +203,13 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
             className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap overflow-hidden"
           >
             {isHovered && (
-              <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">
+              <span 
+                className="text-sm font-medium bg-clip-text text-transparent"
+                style={{
+                  background: `linear-gradient(to right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.accent}, 0.9))`,
+                  WebkitBackgroundClip: "text"
+                }}
+              >
                 {subtitles[currentSubtitleIndex]}
               </span>
             )}
@@ -196,7 +228,11 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
             ease: "easeInOut",
             delay: 0.8
           }}
-          className="absolute -right-1 -top-1 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.7)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.9)]"
+          className="absolute -right-1 -top-1 w-2.5 h-2.5 rounded-full"
+          style={{
+            background: `rgba(${activeColors.accent}, 1)`,
+            boxShadow: `0 0 15px rgba(${activeColors.accent}, 0.7)`
+          }}
         />
         <motion.div
           animate={{ 
@@ -209,7 +245,11 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
             ease: "easeInOut",
             delay: 0.9
           }}
-          className="absolute -left-1 -bottom-1 w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.7)] group-hover:shadow-[0_0_20px_rgba(168,85,247,0.9)]"
+          className="absolute -left-1 -bottom-1 w-2.5 h-2.5 rounded-full"
+          style={{
+            background: `rgba(${activeColors.primary}, 1)`,
+            boxShadow: `0 0 15px rgba(${activeColors.primary}, 0.7)`
+          }}
         />
 
         {/* Additional sparkle effects on hover */}
@@ -218,9 +258,9 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true }) => {
           initial={false}
           animate={{
             background: [
-              "radial-gradient(circle at 30% 20%, rgba(168,85,247,0.4) 0%, transparent 50%)",
-              "radial-gradient(circle at 70% 60%, rgba(236,72,153,0.4) 0%, transparent 50%)",
-              "radial-gradient(circle at 30% 20%, rgba(168,85,247,0.4) 0%, transparent 50%)"
+              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.4) 0%, transparent 50%)`,
+              `radial-gradient(circle at 70% 60%, rgba(${activeColors.secondary}, 0.4) 0%, transparent 50%)`,
+              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.4) 0%, transparent 50%)`
             ]
           }}
           transition={{

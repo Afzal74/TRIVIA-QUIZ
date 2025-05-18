@@ -44,10 +44,14 @@ export default function Header() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
+            className="flex flex-col"
           >
             <Link href="/" className="text-xl font-bold gradient-text">
               QuizVerse
             </Link>
+            <p className="text-sm bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-cyan-500">
+              Knowledge
+            </p>
           </motion.div>
 
           {/* Navigation Links */}
@@ -82,7 +86,6 @@ export default function Header() {
     </motion.header>
   )
 }
-
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
@@ -98,3 +101,4 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     </Link>
   )
 }
+

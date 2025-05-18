@@ -11,8 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <div className="flex items-center mb-4">
-              <Logo className="h-8 w-auto mr-2" />
-              <span className="text-xl font-bold tracking-tight">QuizVerse</span>
+              <span className="text-xl font-bold tracking-tight gradient-text">QuizVerse</span>
             </div>
             <p className="text-gray-400 mb-4">
               Challenge your friends in real-time multiplayer quizzes. Create a room, invite players, and test your
@@ -36,54 +35,32 @@ export default function Footer() {
 
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Explore
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
+            <div className="space-y-3">
+              <Link href="/practice" className="block text-gray-400 hover:text-white transition-colors">
+                Practice
+              </Link>
+              <Link href="/leaderboard" className="block text-gray-400 hover:text-white transition-colors">
+                Leaderboard
+              </Link>
+              <Link href="/about" className="block text-gray-400 hover:text-white transition-colors">
+                About Us
+              </Link>
+            </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                  FAQ
-                </Link>
-              </li>
-            </ul>
+            <h3 className="text-lg font-semibold mb-4">Help & Support</h3>
+            <div className="space-y-3">
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
+                FAQ
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
+                Rules
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
+                Support
+              </Link>
+            </div>
           </div>
 
           <div>

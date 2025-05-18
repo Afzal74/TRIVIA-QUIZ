@@ -35,24 +35,24 @@ export default function RecentWinnersLeaderboard() {
         <div className="flex space-x-1">
           <button
             onClick={() => setFilter("score")}
-            className={`px-2 py-1 text-xs rounded ${
-              filter === "score" ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+            className={`px-2 py-1 text-xs rounded backdrop-blur-sm ${
+              filter === "score" ? "bg-purple-600/90 text-white shadow-lg" : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50"
             }`}
           >
             Score
           </button>
           <button
             onClick={() => setFilter("games")}
-            className={`px-2 py-1 text-xs rounded ${
-              filter === "games" ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+            className={`px-2 py-1 text-xs rounded backdrop-blur-sm ${
+              filter === "games" ? "bg-purple-600/90 text-white shadow-lg" : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50"
             }`}
           >
             Games
           </button>
           <button
             onClick={() => setFilter("winRate")}
-            className={`px-2 py-1 text-xs rounded ${
-              filter === "winRate" ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+            className={`px-2 py-1 text-xs rounded backdrop-blur-sm ${
+              filter === "winRate" ? "bg-purple-600/90 text-white shadow-lg" : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50"
             }`}
           >
             Win %
@@ -67,8 +67,10 @@ export default function RecentWinnersLeaderboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            className={`flex items-center p-3 ${
-              index < 3 ? "bg-gradient-to-r from-gray-800/80 to-gray-900/80 border border-gray-700" : "bg-gray-800/50"
+            className={`flex items-center p-3 backdrop-blur-xl ${
+              index < 3 
+                ? "bg-gradient-to-r from-gray-800/60 to-gray-900/60 border border-gray-700/50 shadow-lg" 
+                : "bg-gray-800/40"
             } rounded-lg`}
           >
             <div className="w-8 flex justify-center">
@@ -79,14 +81,14 @@ export default function RecentWinnersLeaderboard() {
               ) : index === 2 ? (
                 <Award className="h-5 w-5 text-amber-600" />
               ) : (
-                <span className="text-gray-500 font-mono">{index + 1}</span>
+                <span className="text-gray-400 font-mono">{index + 1}</span>
               )}
             </div>
 
             <div className="ml-3 flex-1">
               <div className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 shadow-lg ${
                     index === 0
                       ? "bg-gradient-to-br from-yellow-400 to-yellow-600"
                       : index === 1
@@ -98,24 +100,24 @@ export default function RecentWinnersLeaderboard() {
                 >
                   {winner.name.charAt(0).toUpperCase()}
                 </div>
-                <span className={index < 3 ? "font-medium" : ""}>{winner.name}</span>
+                <span className={index < 3 ? "font-medium text-white" : "text-gray-300"}>{winner.name}</span>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <div className="text-xs text-gray-400">Score</div>
-                <div className={`font-mono ${index < 3 ? "font-bold" : ""}`}>{winner.score}</div>
+                <div className={`font-mono ${index < 3 ? "font-bold text-white" : "text-gray-300"}`}>{winner.score}</div>
               </div>
 
               <div className="text-right">
                 <div className="text-xs text-gray-400">Games</div>
-                <div className="font-mono">{winner.games}</div>
+                <div className={`font-mono ${index < 3 ? "text-white" : "text-gray-300"}`}>{winner.games}</div>
               </div>
 
               <div className="text-right w-12">
                 <div className="text-xs text-gray-400">Win %</div>
-                <div className="font-mono">{winner.winRate}%</div>
+                <div className={`font-mono ${index < 3 ? "text-white" : "text-gray-300"}`}>{winner.winRate}%</div>
               </div>
             </div>
           </motion.div>

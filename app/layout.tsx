@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AudioProvider } from "@/components/audio-provider"
-import CustomCursor from "@/components/custom-cursor"
 import AnimatedBackground from "@/components/animated-background"
 import { Toaster } from "@/components/ui/toaster"
 import Header from "@/components/header"
@@ -25,7 +24,6 @@ export default function RootLayout({
       <body className={`${inter.className} text-white`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AudioProvider>
-            <CustomCursor />
             <AnimatedBackground />
             <Header />
             <main className="pt-24 md:pt-28">
