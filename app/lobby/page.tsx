@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
 import { useAudio } from "@/components/audio-provider"
 import { motion } from "framer-motion"
 import { generateBotName } from "@/lib/utils"
@@ -27,7 +26,6 @@ export default function LobbyPage() {
   const subject = searchParams.get("subject") || "all"
 
   const [players, setPlayers] = useState<string[]>([username])
-  const [botCount, setBotCount] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState<number | null>(null)
   const [questionTime, setQuestionTime] = useState<5 | 10 | 15>(10)
@@ -61,12 +59,7 @@ export default function LobbyPage() {
       // Start the game
       const gameData = {
         roomCode,
-        players: [
-          ...players,
-          ...Array(botCount)
-            .fill(null)
-            .map(() => generateBotName()),
-        ],
+        players,
         host: isHost ? username : players[0],
         difficulty,
         subject,
@@ -77,7 +70,7 @@ export default function LobbyPage() {
       localStorage.setItem(`quizverse-game-${roomCode}`, JSON.stringify(gameData))
 
       // Navigate to the game page
-      router.push(`/game?code=${roomCode}&username=${encodeURIComponent(username)}`)
+      router.push(`/game?code=${roomCode}&username=${encodeURIComponent(username)}&questionTime=${questionTime}`)
       return
     }
 
@@ -86,7 +79,7 @@ export default function LobbyPage() {
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [countdown, router, roomCode, players, botCount, isHost, username, difficulty, subject, questionTime])
+  }, [countdown, router, roomCode, players, isHost, username, difficulty, subject, questionTime])
 
   const startGame = () => {
     if (players.length < 1) {
@@ -194,79 +187,51 @@ export default function LobbyPage() {
                   </div>
 
                   {isHost && (
-                    <>
-                      <div className="mb-6">
-                        <h3 className="text-sm font-medium text-gray-300 mb-2">Add Bots (0-15)</h3>
-                        <div className="flex items-center gap-4">
-                          <Slider
-                            value={[botCount]}
-                            min={0}
-                            max={15}
-                            step={1}
-                            onValueChange={(value) => setBotCount(value[0])}
-                            className="flex-1"
-                          />
-                          <span className="w-8 text-center">{botCount}</span>
-                        </div>
-                      </div>
-
-                      <div className="mb-6">
-                        <h3 className="text-sm font-medium text-gray-300 mb-2">Question Time</h3>
-                        <RadioGroup
-                          value={questionTime.toString()}
-                          onValueChange={(value) => setQuestionTime(Number.parseInt(value) as 5 | 10 | 15)}
-                          className="flex space-x-2"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="5" id="time-5" />
-                            <Label htmlFor="time-5">5s</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="10" id="time-10" />
-                            <Label htmlFor="time-10">10s</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="15" id="time-15" />
-                            <Label htmlFor="time-15">15s</Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                    </>
-                  )}
-
-                  {countdown !== null ? (
-                    <div className="text-center py-4">
-                      <p className="text-gray-300 mb-2">Game starting in:</p>
-                      <p className="text-4xl font-bold gradient-text">{countdown}</p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-3">
-                      {isHost ? (
-                        <Button
-                          onClick={startGame}
-                          disabled={isLoading || players.length < 1}
-                          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                        >
-                          Start Game
-                        </Button>
-                      ) : (
-                        <p className="text-center text-gray-400 mb-2">Waiting for host to start the game...</p>
-                      )}
-
-                      <Button
-                        onClick={leaveLobby}
-                        variant="outline"
-                        className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                    <div className="mb-6">
+                      <h3 className="text-sm font-medium text-gray-300 mb-2">Question Time</h3>
+                      <RadioGroup
+                        value={questionTime.toString()}
+                        onValueChange={(value) => setQuestionTime(parseInt(value) as 5 | 10 | 15)}
+                        className="flex gap-4"
                       >
-                        Leave Lobby
-                      </Button>
+                        {[5, 10, 15].map((time) => (
+                          <div key={time} className="flex items-center space-x-2">
+                            <RadioGroupItem value={time.toString()} id={`time-${time}`} />
+                            <Label htmlFor={`time-${time}`}>{time}s</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
                     </div>
                   )}
+
+                  <div className="space-y-4">
+                    <Button
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg font-medium"
+                      onClick={startGame}
+                      disabled={isLoading || countdown !== null}
+                    >
+                      {countdown !== null ? (
+                        `Starting in ${countdown}...`
+                      ) : isLoading ? (
+                        "Loading..."
+                      ) : (
+                        "Start Game"
+                      )}
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                      onClick={leaveLobby}
+                    >
+                      Leave Lobby
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="text-center text-gray-500 text-sm">
-                  <p>Share the room code with friends to play together</p>
-                </div>
+                <p className="text-center text-gray-400 text-sm">
+                  Share the room code with friends to play together
+                </p>
               </motion.div>
             </div>
           </div>

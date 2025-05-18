@@ -1,12 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Input } from "@/components/ui/input"
-import { useAudio } from "@/components/audio-provider"
-import { Clock, Zap, AlertTriangle, Trophy, BookOpen, FlaskRoundIcon as Flask, Globe, Code, GraduationCap } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useAudio } from "@/components/audio-provider"
 import { generateRoomCode } from "@/lib/utils"
+import { mockQuestions } from "@/data/mock-questions"
+import {
+  GraduationCap,
+  Clock,
+  Zap,
+  AlertTriangle,
+  Trophy,
+  BookOpen,
+  FlaskConical,
+  Globe,
+  Code
+} from "lucide-react"
 
 interface DifficultyOption {
   id: "easy" | "average" | "hard"
@@ -63,7 +74,7 @@ const categories: CategoryOption[] = [
   {
     id: "science",
     label: "Science",
-    icon: <Flask className="h-5 w-5" />,
+    icon: <FlaskConical className="h-5 w-5" />,
     className: "border-green-500/20 hover:bg-green-500/10 [&.selected]:bg-green-500/20"
   },
   {
@@ -84,9 +95,18 @@ export default function CreateRoomForm() {
   const [username, setUsername] = useState("")
   const [selectedDifficulty, setSelectedDifficulty] = useState<"easy" | "average" | "hard">("average")
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [numBots, setNumBots] = useState(0)
   const [error, setError] = useState("")
   const { playSound } = useAudio()
   const router = useRouter()
+
+  // Calculate number of questions for selected category
+  const questionCount = useMemo(() => {
+    const allQuestions = selectedCategory === "all"
+      ? Object.values(mockQuestions).flat()
+      : mockQuestions[selectedCategory] || [];
+    return Math.min(allQuestions.length, 15);
+  }, [selectedCategory]);
 
   const handleCreateRoom = () => {
     if (!username.trim()) {
@@ -97,7 +117,6 @@ export default function CreateRoomForm() {
 
     // Generate room code
     const roomCode = generateRoomCode()
-    console.log("Generated room code:", roomCode)
 
     // Save to localStorage
     localStorage.setItem("quizverse-username", username)
@@ -107,10 +126,9 @@ export default function CreateRoomForm() {
     const params = new URLSearchParams({
       username: username,
       subject: selectedCategory,
-      difficulty: selectedDifficulty
+      difficulty: selectedDifficulty,
+      bots: numBots.toString()
     })
-
-    console.log("Navigation URL:", `/game/${roomCode}?${params.toString()}`)
 
     playSound("click")
     
@@ -141,6 +159,25 @@ export default function CreateRoomForm() {
           className="glass-input text-white placeholder-gray-400"
         />
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+      </div>
+
+      {/* Add Bots Input */}
+      <div>
+        <label htmlFor="bots" className="block text-sm font-medium text-gray-300 mb-2">
+          Add Bots (0-15)
+        </label>
+        <Input
+          id="bots"
+          type="number"
+          min="0"
+          max="15"
+          value={numBots}
+          onChange={(e) => setNumBots(Math.min(15, Math.max(0, parseInt(e.target.value) || 0)))}
+          className="glass-input text-white placeholder-gray-400"
+        />
+        <p className="mt-1 text-sm text-gray-400">
+          {numBots === 0 ? "No bots" : `${numBots} bot${numBots === 1 ? "" : "s"}`}
+        </p>
       </div>
 
       {/* Difficulty Selection */}
@@ -189,6 +226,9 @@ export default function CreateRoomForm() {
             >
               {icon}
               <span className="mt-1 font-medium text-white">{label}</span>
+              <span className="text-xs text-gray-400 mt-1">
+                {questionCount} Questions
+              </span>
             </motion.button>
           ))}
         </div>
@@ -203,7 +243,7 @@ export default function CreateRoomForm() {
           text-white font-medium py-4 px-8 rounded-lg flex items-center justify-center space-x-3 glass-button"
       >
         <GraduationCap className="h-5 w-5" />
-        <span>Start Quiz</span>
+        <span>Start Quiz ({questionCount} Questions)</span>
       </motion.button>
     </div>
   )

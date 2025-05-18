@@ -43,14 +43,14 @@ export default function DashboardAnalytics() {
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid grid-cols-3 bg-gray-800">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
+          <TabsTrigger value="overview" className="tab-trigger">Overview</TabsTrigger>
+          <TabsTrigger value="performance" className="tab-trigger">Performance</TabsTrigger>
+          <TabsTrigger value="trends" className="tab-trigger">Trends</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4 mt-4">
+        <TabsContent value="overview" className="space-y-4 mt-4 tab-content">
           <div className="grid grid-cols-2 gap-4">
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-gray-800/50 border-gray-700 analytics-card">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center text-gray-400">
                   <Users className="h-4 w-4 mr-2 text-purple-400" />
@@ -63,7 +63,7 @@ export default function DashboardAnalytics() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-gray-700">
+            <Card className="bg-gray-800/50 border-gray-700 analytics-card">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center text-gray-400">
                   <Award className="h-4 w-4 mr-2 text-pink-400" />
@@ -77,7 +77,7 @@ export default function DashboardAnalytics() {
             </Card>
           </div>
 
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-gray-800/50 border-gray-700 analytics-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center text-gray-400">
                 <Brain className="h-4 w-4 mr-2 text-cyan-400" />
@@ -92,7 +92,7 @@ export default function DashboardAnalytics() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-gray-800/50 border-gray-700 analytics-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center text-gray-400">
                 <Clock className="h-4 w-4 mr-2 text-yellow-400" />
@@ -106,7 +106,7 @@ export default function DashboardAnalytics() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="performance" className="space-y-4 mt-4">
+        <TabsContent value="performance" className="space-y-4 mt-4 tab-content">
           <Card className="bg-gray-800/50 border-gray-700">
             <CardHeader>
               <CardTitle className="text-sm font-medium flex items-center text-gray-400">
@@ -117,7 +117,7 @@ export default function DashboardAnalytics() {
             </CardHeader>
             <CardContent className="space-y-3">
               {Object.entries(mockAnalytics.categoryPerformance).map(([category, score]) => (
-                <div key={category}>
+                <div key={category} className="progress-bar-container rounded-lg p-2">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-sm">{category}</span>
                     <span className="text-sm font-medium">{score}%</span>
@@ -129,7 +129,7 @@ export default function DashboardAnalytics() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="trends" className="space-y-4 mt-4">
+        <TabsContent value="trends" className="space-y-4 mt-4 tab-content">
           <Card className="bg-gray-800/50 border-gray-700">
             <CardHeader>
               <CardTitle className="text-sm font-medium flex items-center text-gray-400">

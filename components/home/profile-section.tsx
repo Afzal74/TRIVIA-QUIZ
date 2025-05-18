@@ -92,7 +92,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
       <div className="flex flex-col items-center">
         <div className="relative mb-4">
           <div
-            className={`w-20 h-20 rounded-full bg-gradient-to-br ${avatarColor} flex items-center justify-center text-3xl cursor-pointer`}
+            className={`w-20 h-20 rounded-full bg-gradient-to-br ${avatarColor} flex items-center justify-center text-3xl cursor-pointer avatar-container`}
             onClick={() => {
               setShowEmojiPicker(!showEmojiPicker)
               playSound("click")
@@ -105,7 +105,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
               setShowEmojiPicker(!showEmojiPicker)
               playSound("click")
             }}
-            className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1 border border-gray-700 hover:bg-gray-700 transition-colors"
+            className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1 border border-gray-700 hover:bg-gray-700 transition-colors edit-button"
           >
             <Edit2 className="h-4 w-4" />
           </button>
@@ -155,7 +155,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
+        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700 stats-card">
           <div className="flex items-center text-sm font-medium text-gray-400 mb-1">
             <Award className="h-4 w-4 mr-1 text-yellow-400" />
             Games Won
@@ -164,7 +164,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
           <div className="text-xs text-gray-500">out of {mockStats.gamesPlayed} played</div>
         </div>
 
-        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
+        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700 stats-card">
           <div className="flex items-center text-sm font-medium text-gray-400 mb-1">
             <BarChart3 className="h-4 w-4 mr-1 text-purple-400" />
             Total Score
@@ -173,7 +173,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
           <div className="text-xs text-gray-500">avg {mockStats.averageScore} per game</div>
         </div>
 
-        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
+        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700 stats-card">
           <div className="flex items-center text-sm font-medium text-gray-400 mb-1">
             <Brain className="h-4 w-4 mr-1 text-cyan-400" />
             Correct Answers
@@ -184,7 +184,7 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
           </div>
         </div>
 
-        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
+        <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700 stats-card">
           <div className="flex items-center text-sm font-medium text-gray-400 mb-1">
             <Clock className="h-4 w-4 mr-1 text-pink-400" />
             Fastest Answer
@@ -204,8 +204,8 @@ export default function ProfileSection({ username, setUsername }: ProfileSection
             <motion.div
               key={achievement.id}
               whileHover={{ x: 2 }}
-              className={`p-3 rounded-lg border ${
-                achievement.unlocked ? "bg-gray-800/50 border-gray-700" : "bg-gray-900/50 border-gray-800 opacity-60"
+              className={`p-3 rounded-lg border achievement-card ${
+                achievement.unlocked ? "bg-gray-800/50 border-gray-700 unlocked" : "bg-gray-900/50 border-gray-800 opacity-60"
               }`}
             >
               <div className="flex items-start">

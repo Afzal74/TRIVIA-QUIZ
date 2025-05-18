@@ -1,33 +1,56 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, useScroll } from "framer-motion"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { User } from "lucide-react"
-import { NavLink } from "@/components/nav-link"
-import ThemeColorSelector from "@/components/theme-color-selector"
+import { useEffect, useState } from "react"
+import ThemeColorSelector from "./theme-color-selector"
 
 export default function Header() {
   const { scrollY } = useScroll()
   const [isScrolled, setIsScrolled] = useState(false)
-  const pathname = usePathname()
 
+  // Header background opacity based on scroll
+  const headerBgOpacity = useTransform(scrollY, [0, 100], [0, 1])
+  
+  // Update scroll state
   useEffect(() => {
-    return scrollY.onChange((latest) => {
-      setIsScrolled(latest > 50)
-    })
-  }, [scrollY])
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId)
+    if (section) {
+      const headerOffset = 80 // Account for fixed header
+      const elementPosition = section.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      })
+    }
+  }
 
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-gray-900/80 backdrop-blur-xl" : "bg-transparent"
+        isScrolled ? "py-2" : "py-6"
       }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0)",
+      }}
     >
+      <motion.div
+        className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm"
+        style={{ opacity: headerBgOpacity }}
+      />
+      
       <div className="container mx-auto px-4 relative">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -48,7 +71,7 @@ export default function Header() {
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-2">
             <NavLink href="/notes">Notes</NavLink>
-            <NavLink href="/leaderboard">Leaderboard</NavLink>
+            <NavButton onClick={() => scrollToSection('leaderboard-section')}>Leaderboard</NavButton>
             <NavLink href="/about">About</NavLink>
           </div>
 
@@ -79,6 +102,50 @@ export default function Header() {
         </div>
       </div>
     </motion.header>
+  )
+}
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <motion.div
+      whileHover={{ y: -2 }}
+      whileTap={{ y: 0 }}
+    >
+      <Link
+        href={href}
+        className="text-gray-300 hover:text-white transition-all duration-300 relative group px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm"
+      >
+        {children}
+        <motion.div
+          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100"
+          initial={{ scaleX: 0 }}
+          whileHover={{ scaleX: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      </Link>
+    </motion.div>
+  )
+}
+
+function NavButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  return (
+    <motion.div
+      whileHover={{ y: -2 }}
+      whileTap={{ y: 0 }}
+    >
+      <button
+        onClick={onClick}
+        className="text-gray-300 hover:text-white transition-all duration-300 relative group px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm"
+      >
+        {children}
+        <motion.div
+          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100"
+          initial={{ scaleX: 0 }}
+          whileHover={{ scaleX: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      </button>
+    </motion.div>
   )
 }
 

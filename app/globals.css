@@ -193,3 +193,165 @@ body {
     display: none;
   }
 }
+
+/* Professional hover effects for leaderboard and analytics */
+.leaderboard-item {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.leaderboard-item:hover {
+  @apply transform scale-[1.02] shadow-lg shadow-purple-500/10;
+  background: linear-gradient(to right, rgba(88, 28, 135, 0.1), rgba(126, 34, 206, 0.1));
+}
+
+.analytics-card {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.analytics-card:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* Enhanced hover effects for profile stats */
+.stats-card {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.stats-card:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(126, 34, 206, 0.1));
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* Tab hover effects */
+.tab-trigger {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.tab-trigger:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to right, rgba(88, 28, 135, 0.2), rgba(126, 34, 206, 0.2));
+}
+
+.tab-trigger[data-state="active"] {
+  @apply shadow-lg;
+  background: linear-gradient(to right, rgba(147, 51, 234, 0.5), rgba(168, 85, 247, 0.5));
+}
+
+.tab-trigger[data-state="active"]:hover {
+  background: linear-gradient(to right, rgba(147, 51, 234, 0.6), rgba(168, 85, 247, 0.6));
+}
+
+/* Tab content hover effects */
+.tab-content {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.tab-content[data-state="active"] {
+  @apply animate-in fade-in-50 slide-in-from-bottom-5;
+}
+
+/* Profile section hover effects */
+.achievement-card {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.achievement-card:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to right, rgba(88, 28, 135, 0.15), rgba(126, 34, 206, 0.15));
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.achievement-card.unlocked:hover {
+  background: linear-gradient(to right, rgba(234, 179, 8, 0.15), rgba(234, 88, 12, 0.15));
+  border-color: rgba(234, 179, 8, 0.5);
+}
+
+.avatar-container {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.avatar-container:hover {
+  @apply transform scale-[1.05] shadow-lg;
+  filter: brightness(1.1);
+}
+
+.edit-button {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.edit-button:hover {
+  @apply transform scale-110 shadow-lg;
+  background: linear-gradient(to right, rgba(88, 28, 135, 0.3), rgba(126, 34, 206, 0.3));
+}
+
+/* Category and Difficulty Button Hover Effects */
+.category-button {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.category-button:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to right, rgba(88, 28, 135, 0.2), rgba(126, 34, 206, 0.2));
+}
+
+.category-button.active {
+  @apply shadow-lg;
+}
+
+.category-button.active:hover {
+  @apply transform scale-[1.02];
+  filter: brightness(1.1);
+}
+
+/* Feature Card Hover Effects */
+.feature-card {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.feature-card:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.1), rgba(126, 34, 206, 0.1));
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* Input Field Hover Effects */
+.input-hover {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.input-hover:hover {
+  @apply shadow-md border-purple-500/30;
+  background: rgba(88, 28, 135, 0.1);
+}
+
+.input-hover:focus {
+  @apply shadow-lg border-purple-500/50;
+  background: rgba(88, 28, 135, 0.15);
+}
+
+/* CTA Button Hover Effects */
+.cta-button {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.cta-button:hover {
+  @apply transform scale-[1.02] shadow-lg;
+  filter: brightness(1.1);
+}
+
+.cta-button:active {
+  @apply transform scale-[0.98];
+}
+
+/* Progress Bar Hover Effects */
+.progress-bar-container {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.progress-bar-container:hover {
+  @apply shadow-md;
+  background: rgba(88, 28, 135, 0.1);
+}
