@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Logo from "@/components/logo"
-import { Facebook, Twitter, Instagram, GitlabIcon as GitHub, Mail } from "lucide-react"
+import { Mail, Trophy, Github, Phone, Linkedin } from "lucide-react"
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -18,17 +18,23 @@ export default function Footer() {
               knowledge.
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
-                <Facebook className="h-5 w-5" />
+              <Link 
+                href="https://www.linkedin.com/in/afzal-basheer-127878264" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-gray-400 hover:text-white transition-colors" 
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
-                <Twitter className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
-                <Instagram className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="GitHub">
-                <GitHub className="h-5 w-5" />
+              <Link 
+                href="https://github.com/ASUS-AICS/trivia-quiz" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-gray-400 hover:text-white transition-colors" 
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -36,11 +42,17 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <div className="space-y-3">
+              <Link href="/" className="block text-gray-400 hover:text-white transition-colors">
+                Home
+              </Link>
               <Link href="/notes" className="block text-gray-400 hover:text-white transition-colors">
                 Notes
               </Link>
-              <Link href="/leaderboard" className="block text-gray-400 hover:text-white transition-colors">
-                Leaderboard
+              <Link
+                href="/#leaderboard-section"
+                className="block text-gray-400 hover:text-white transition-colors"
+              >
+                Stats & Leaderboard
               </Link>
               <Link href="/about" className="block text-gray-400 hover:text-white transition-colors">
                 About Us
@@ -68,7 +80,11 @@ export default function Footer() {
             <div className="space-y-3">
               <p className="text-gray-400 flex items-start">
                 <Mail className="h-5 w-5 mr-2 mt-0.5" />
-                <span>support@quizverse.com</span>
+                <span>appuafzal777@gmail.com</span>
+              </p>
+              <p className="text-gray-400 flex items-start">
+                <Phone className="h-5 w-5 mr-2 mt-0.5" />
+                <span>+91 8073925730</span>
               </p>
               <p className="text-gray-400">
                 Have questions or feedback? We'd love to hear from you. Reach out to our team.

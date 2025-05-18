@@ -95,7 +95,7 @@ export default function CreateRoomForm() {
   const [username, setUsername] = useState("")
   const [selectedDifficulty, setSelectedDifficulty] = useState<"easy" | "average" | "hard">("average")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [numBots, setNumBots] = useState(0)
+  const [includeBots, setIncludeBots] = useState(true)
   const [error, setError] = useState("")
   const { playSound } = useAudio()
   const router = useRouter()
@@ -105,7 +105,7 @@ export default function CreateRoomForm() {
     const allQuestions = selectedCategory === "all"
       ? Object.values(mockQuestions).flat()
       : mockQuestions[selectedCategory] || [];
-    return Math.min(allQuestions.length, 15);
+    return Math.min(allQuestions.length, 10); // Limit to 10 questions
   }, [selectedCategory]);
 
   const handleCreateRoom = () => {
@@ -118,26 +118,25 @@ export default function CreateRoomForm() {
     // Generate room code
     const roomCode = generateRoomCode()
 
-    // Save to localStorage
-    localStorage.setItem("quizverse-username", username)
-    localStorage.setItem("quizverse-subject", selectedCategory)
-
-    // Prepare URL parameters
-    const params = new URLSearchParams({
-      username: username,
-      subject: selectedCategory,
+    // Save game settings to localStorage
+    const gameData = {
+      roomCode,
+      players: [username],
+      host: username,
       difficulty: selectedDifficulty,
-      bots: numBots.toString()
-    })
+      subject: selectedCategory,
+      includeBots
+    }
 
-    playSound("click")
-    
-    // Navigate directly to the game using the dynamic route
-    router.push(`/game/${roomCode}?${params.toString()}`)
+    localStorage.setItem(`quizverse-game-${roomCode}`, JSON.stringify(gameData))
+    localStorage.setItem("quizverse-username", username)
+
+    // Navigate to lobby
+    router.push(`/lobby?code=${roomCode}`)
   }
 
   return (
-    <div className="glass-form space-y-6">
+    <form onSubmit={(e) => { e.preventDefault(); handleCreateRoom(); }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white mb-2">Create a New Quiz Room</h2>
         <p className="text-gray-300">Set up your room and invite friends to join!</p>
@@ -161,25 +160,6 @@ export default function CreateRoomForm() {
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
 
-      {/* Add Bots Input */}
-      <div>
-        <label htmlFor="bots" className="block text-sm font-medium text-gray-300 mb-2">
-          Add Bots (0-15)
-        </label>
-        <Input
-          id="bots"
-          type="number"
-          min="0"
-          max="15"
-          value={numBots}
-          onChange={(e) => setNumBots(Math.min(15, Math.max(0, parseInt(e.target.value) || 0)))}
-          className="glass-input text-white placeholder-gray-400"
-        />
-        <p className="mt-1 text-sm text-gray-400">
-          {numBots === 0 ? "No bots" : `${numBots} bot${numBots === 1 ? "" : "s"}`}
-        </p>
-      </div>
-
       {/* Difficulty Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -189,10 +169,11 @@ export default function CreateRoomForm() {
           {difficulties.map(({ id, label, time, icon, className }) => (
             <motion.button
               key={id}
+              type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
-                setSelectedDifficulty(id)
+                setSelectedDifficulty(id as "easy" | "average" | "hard")
                 playSound("click")
               }}
               className={`glass-panel-hover p-4 rounded-lg flex flex-col items-center text-center
@@ -234,9 +215,34 @@ export default function CreateRoomForm() {
         </div>
       </div>
 
+      {/* Bots toggle */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Game Mode
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => setIncludeBots(false)}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              !includeBots ? "glass-button-active" : "glass-button-secondary"
+            }`}
+          >
+            Players Only
+          </button>
+          <button
+            onClick={() => setIncludeBots(true)}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              includeBots ? "glass-button-active" : "glass-button-secondary"
+            }`}
+          >
+            With Bots
+          </button>
+        </div>
+      </div>
+
       {/* Create Button */}
       <motion.button
-        onClick={handleCreateRoom}
+        type="submit"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 
@@ -245,6 +251,6 @@ export default function CreateRoomForm() {
         <GraduationCap className="h-5 w-5" />
         <span>Start Quiz ({questionCount} Questions)</span>
       </motion.button>
-    </div>
+    </form>
   )
 } 

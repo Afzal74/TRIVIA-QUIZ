@@ -3,12 +3,26 @@ import { useRouter } from "next/navigation";
 import { mockQuestions } from "@/data/mock-questions";
 import QuizGame from "./quiz-game";
 import { useToast } from "@/components/ui/use-toast";
+import { generateBotName } from "@/lib/utils";
 
 interface GameInitializerProps {
   category: string;
   difficulty: string;
   roomCode: string;
   username: string;
+}
+
+interface GameData {
+  roomCode: string;
+  players: string[];
+  host: string;
+  difficulty: string;
+  subject: string;
+  includeBots?: boolean;
+  questionTime?: number;
+  maxRounds?: number;
+  currentRound?: number;
+  totalPlayers?: number;
 }
 
 export default function GameInitializer({
@@ -23,36 +37,65 @@ export default function GameInitializer({
 
   useEffect(() => {
     try {
-      console.log("Initializing game with:", {
-        category,
-        difficulty,
-        roomCode,
-        username
-      });
+      // Get existing lobby players and game settings from localStorage
+      const gameData = JSON.parse(localStorage.getItem(`quizverse-game-${roomCode}`) || '{}') as GameData;
+      const lobbyPlayers = gameData.players || [username];
+      const includeBots = gameData.includeBots ?? true;
+      
+      // Initialize players array with lobby players
+      const players = lobbyPlayers.map((name: string) => ({
+        id: name === username ? "user" : `player-${name}`,
+        name: name,
+        score: 0
+      }));
 
-      // Initialize players
-      const players = [
-        { id: "user", name: username, score: 0 },
-        { id: "bot1", name: "Bot 1", score: 0 },
-        { id: "bot2", name: "Bot 2", score: 0 },
-      ];
+      // If bots are enabled and we have less than 15 players, add bots
+      if (includeBots && players.length < 15) {
+        const botsNeeded = 15 - players.length;
+        const bots = Array(botsNeeded).fill(0).map((_, index) => {
+          const botName = generateBotName();
+          return {
+            id: `bot${index + 1}`,
+            name: botName,
+            score: 0
+          };
+        });
+        players.push(...bots);
+      }
 
-      // Store game data in localStorage
-      const gameData = {
+      // Get time limit based on difficulty
+      const getTimeLimit = (diff: string) => {
+        switch (diff.toLowerCase()) {
+          case 'easy': return 30;
+          case 'average': return 20;
+          case 'hard': return 15;
+          default: return 20;
+        }
+      };
+
+      // Store updated game data in localStorage
+      const updatedGameData = {
+        ...gameData,
         roomCode,
         players: players.map(p => p.name),
         host: username,
         difficulty,
         subject: category,
-        questionTime: difficulty === "easy" ? 30 : difficulty === "hard" ? 15 : 20,
+        questionTime: getTimeLimit(difficulty),
+        maxRounds: 10,
+        currentRound: 0,
+        totalPlayers: players.length
       };
 
-      console.log("Storing game data:", gameData);
+      console.log("Storing game data:", updatedGameData);
 
-      localStorage.setItem(`quizverse-game-${roomCode}`, JSON.stringify(gameData));
+      localStorage.setItem(`quizverse-game-${roomCode}`, JSON.stringify(updatedGameData));
       localStorage.setItem("quizverse-username", username);
       
       setIsInitialized(true);
+
+      // Store the initialized players for the QuizGame component
+      localStorage.setItem(`quizverse-players-${roomCode}`, JSON.stringify(players));
     } catch (error) {
       console.error("Game initialization error:", error);
       toast({
@@ -75,15 +118,15 @@ export default function GameInitializer({
     );
   }
 
+  // Get all players from localStorage
+  const allPlayers = JSON.parse(localStorage.getItem(`quizverse-players-${roomCode}`) || '[]');
+
   return (
     <QuizGame
-      players={[
-        { id: "user", name: username, score: 0 },
-        { id: "bot1", name: "Bot 1", score: 0 },
-        { id: "bot2", name: "Bot 2", score: 0 },
-      ]}
+      players={allPlayers}
       category={category}
       difficulty={difficulty}
+      roomCode={roomCode}
       onGameEnd={() => router.push("/")}
     />
   );

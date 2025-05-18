@@ -172,7 +172,7 @@ export default function QuizLeaderboard({
         </AnimatePresence>
       </div>
 
-      {onContinue && (
+      {isFinalLeaderboard && onContinue && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -183,7 +183,7 @@ export default function QuizLeaderboard({
             onClick={onContinue}
             className="glass-button px-6 py-2 text-white font-medium"
           >
-            {isFinalLeaderboard ? "Back to Menu" : "Continue"}
+            Back to Menu
           </button>
         </motion.div>
       )}

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { mockQuestions } from "@/data/mock-questions"
 import QuizLeaderboard from "./quiz-leaderboard"
 import { CheckCircle2, XCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface Player {
   id: string
@@ -18,10 +19,11 @@ interface QuizGameProps {
   players: Player[]
   category: string
   difficulty: string
+  roomCode: string
   onGameEnd?: () => void
 }
 
-export default function QuizGame({ players: initialPlayers, category, difficulty, onGameEnd }: QuizGameProps) {
+export default function QuizGame({ players: initialPlayers, category, difficulty, roomCode, onGameEnd }: QuizGameProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [players, setPlayers] = useState(initialPlayers)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
@@ -30,6 +32,17 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
   const [answerSubmitted, setAnswerSubmitted] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
   const [quizEndedEarly, setQuizEndedEarly] = useState(false)
+  const router = useRouter()
+
+  // Get time limit based on difficulty
+  const getTimeLimit = (diff: string) => {
+    switch (diff.toLowerCase()) {
+      case 'easy': return 30;
+      case 'average': return 20;
+      case 'hard': return 15;
+      default: return 20;
+    }
+  };
 
   // Get questions for the selected category and shuffle them
   const questions = useMemo(() => {
@@ -41,13 +54,14 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
     // Shuffle the questions
     selectedQuestions = [...selectedQuestions].sort(() => Math.random() - 0.5);
     
-    // Limit to 15 questions maximum
-    return selectedQuestions.slice(0, 15);
+    // Limit to 10 questions
+    return selectedQuestions.slice(0, 10);
   }, [category]);
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const isCorrect = selectedAnswer === currentQuestion?.correctAnswer;
+  const timeLimit = getTimeLimit(difficulty);
 
   useEffect(() => {
     if (answerSubmitted) {
@@ -58,10 +72,24 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
       const timer = setTimeout(() => {
         setShowLeaderboard(true);
         setShowExplanation(false);
+        // If it's the last question, set game as ended
+        if (isLastQuestion) {
+          setGameEnded(true);
+        } else {
+          // Auto proceed to next question after 4 seconds of showing leaderboard
+          const nextQuestionTimer = setTimeout(() => {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setShowLeaderboard(false);
+            setSelectedAnswer(null);
+            setAnswerSubmitted(false);
+            setShowExplanation(false);
+          }, 4000);
+          return () => clearTimeout(nextQuestionTimer);
+        }
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [answerSubmitted]);
+  }, [answerSubmitted, isLastQuestion]);
 
   const handleAnswerSelect = (answer: string) => {
     if (answerSubmitted) return;
@@ -95,21 +123,10 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
     setPlayers(updatedPlayers);
   };
 
-  const handleContinue = () => {
-    if (isLastQuestion || quizEndedEarly) {
-      setGameEnded(true);
-    } else {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setShowLeaderboard(false);
-      setSelectedAnswer(null);
-      setAnswerSubmitted(false);
-      setShowExplanation(false);
-    }
-  };
-
   const handleEndQuiz = () => {
     setQuizEndedEarly(true);
     setGameEnded(true);
+    router.push("/"); // Redirect to home immediately
   };
 
   return (
@@ -121,25 +138,19 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
               key="leaderboard"
               players={players}
               isFinalLeaderboard={gameEnded}
-              onContinue={gameEnded ? onGameEnd : handleContinue}
+              onContinue={gameEnded ? onGameEnd : undefined}
             />
             {!gameEnded && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex justify-center space-x-4"
+                className="flex justify-center"
               >
                 <button
                   onClick={handleEndQuiz}
                   className="glass-button-secondary px-6 py-2 text-white font-medium"
                 >
                   End Quiz
-                </button>
-                <button
-                  onClick={handleContinue}
-                  className="glass-button px-6 py-2 text-white font-medium"
-                >
-                  Next Question
                 </button>
               </motion.div>
             )}
@@ -155,7 +166,7 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
             {/* Question Counter */}
             <div className="flex justify-between items-center mb-6">
               <span className="text-sm text-gray-400">
-                Question {currentQuestionIndex + 1} of {questions.length}
+                Question {currentQuestionIndex + 1} of 10
               </span>
               {isLastQuestion && (
                 <span className="text-sm text-purple-400 font-medium">
@@ -241,7 +252,7 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
                   initial={{ width: "100%" }}
                   animate={{ width: "0%" }}
                   transition={{
-                    duration: currentQuestion.timeLimit,
+                    duration: timeLimit,
                     ease: "linear"
                   }}
                   onAnimationComplete={() => {
