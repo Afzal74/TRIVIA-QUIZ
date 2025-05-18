@@ -55,7 +55,7 @@ export default function Header() {
           </motion.div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-2">
             <NavLink href="/practice">Practice</NavLink>
             <NavLink href="/leaderboard">Leaderboard</NavLink>
             <NavLink href="/about">About</NavLink>
@@ -71,13 +71,17 @@ export default function Header() {
             >
               <Link
                 href="/profile"
-                className={`flex items-center justify-center rounded-full bg-gray-900/60 backdrop-blur-sm border border-gray-800 hover:bg-gray-800/80 transition-all duration-300 ${
+                className={`flex items-center justify-center rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:bg-gray-700/60 hover:border-gray-600/50 transition-all duration-300 ${
                   isScrolled ? "w-9 h-9" : "w-10 h-10"
                 }`}
               >
-                <User className={`text-white transition-all duration-300 ${
+                <User className={`text-gray-100 transition-all duration-300 ${
                   isScrolled ? "w-4 h-4" : "w-5 h-5"
                 }`} />
+                <motion.div
+                  className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
+                  style={{ mixBlendMode: "overlay" }}
+                />
               </Link>
             </motion.div>
           </div>
@@ -88,17 +92,23 @@ export default function Header() {
 }
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      className="text-gray-300 hover:text-white transition-colors relative group"
+    <motion.div
+      whileHover={{ y: -2 }}
+      whileTap={{ y: 0 }}
     >
-      {children}
-      <motion.div
-        className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-100"
-        initial={false}
-        transition={{ duration: 0.3 }}
-      />
-    </Link>
+      <Link
+        href={href}
+        className="text-gray-300 hover:text-white transition-all duration-300 relative group px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm"
+      >
+        {children}
+        <motion.div
+          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100"
+          initial={{ scaleX: 0 }}
+          whileHover={{ scaleX: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      </Link>
+    </motion.div>
   )
 }
 

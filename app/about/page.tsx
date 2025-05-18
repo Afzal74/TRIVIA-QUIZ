@@ -6,7 +6,7 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16 pb-20">
+      <main className="min-h-screen pt-10 pb-15">
         <section className="relative py-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-black"></div>

@@ -37,21 +37,21 @@ export default function AnimatedBackground() {
 
     // Create shapes
     const shapes: Shape[] = []
-    const numberOfShapes = 40
+    const numberOfShapes = 30 // Reduced number of shapes
 
     for (let i = 0; i < numberOfShapes; i++) {
       const shapeTypes: Shape['type'][] = ['triangle', 'square', 'circle']
       shapes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 20 + 15, // Random size between 15 and 35
+        size: Math.random() * 15 + 10, // Smaller size between 10 and 25
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        opacity: Math.random() * 0.3 + 0.1, // Random opacity between 0.1 and 0.4
+        rotationSpeed: (Math.random() - 0.5) * 0.01, // Slower rotation
+        speedX: (Math.random() - 0.5) * 0.3, // Slower movement
+        speedY: (Math.random() - 0.5) * 0.3, // Slower movement
+        opacity: Math.random() * 0.15 + 0.05, // Lower opacity between 0.05 and 0.2
         type: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-        colorIndex: Math.floor(Math.random() * 3) // 0 = primary, 1 = secondary, 2 = accent
+        colorIndex: Math.floor(Math.random() * 3)
       })
     }
 
@@ -61,12 +61,12 @@ export default function AnimatedBackground() {
       ctx.translate(shape.x, shape.y)
       ctx.rotate(shape.rotation)
 
-      // Get color based on colorIndex
+      // Get color based on colorIndex with lighter opacity
       const color = shape.colorIndex === 0 
-        ? `rgba(${colors.primary}, ${shape.opacity})`
+        ? `rgba(${colors.primary}, ${shape.opacity * 0.7})`
         : shape.colorIndex === 1
-        ? `rgba(${colors.secondary}, ${shape.opacity})`
-        : `rgba(${colors.accent}, ${shape.opacity})`
+        ? `rgba(${colors.secondary}, ${shape.opacity * 0.7})`
+        : `rgba(${colors.accent}, ${shape.opacity * 0.7})`
       
       ctx.fillStyle = color
       ctx.beginPath()
@@ -112,8 +112,8 @@ export default function AnimatedBackground() {
         drawShape(ctx, shape)
       })
 
-      // Add subtle glow effect
-      ctx.fillStyle = `rgba(${colors.primary}, 0.03)`
+      // Add very subtle glow effect
+      ctx.fillStyle = `rgba(${colors.primary}, 0.01)`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       requestAnimationFrame(animate)
@@ -124,15 +124,15 @@ export default function AnimatedBackground() {
     return () => {
       window.removeEventListener("resize", updateCanvasSize)
     }
-  }, [colors]) // Re-run effect when colors change
+  }, [colors])
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10"
       style={{ 
-        background: "linear-gradient(to bottom, rgb(0, 0, 0), rgb(17, 24, 39))",
-        filter: "blur(0.5px)" // Subtle blur effect for smoother rendering
+        background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.97), rgba(17, 24, 39, 0.97))",
+        filter: "blur(1px)" // Slightly increased blur for smoother appearance
       }}
     />
   )

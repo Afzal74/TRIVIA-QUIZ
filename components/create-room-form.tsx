@@ -97,21 +97,29 @@ export default function CreateRoomForm() {
 
     // Generate room code
     const roomCode = generateRoomCode()
+    console.log("Generated room code:", roomCode)
 
     // Save to localStorage
     localStorage.setItem("quizverse-username", username)
     localStorage.setItem("quizverse-subject", selectedCategory)
 
+    // Prepare URL parameters
+    const params = new URLSearchParams({
+      username: username,
+      subject: selectedCategory,
+      difficulty: selectedDifficulty
+    })
+
+    console.log("Navigation URL:", `/game/${roomCode}?${params.toString()}`)
+
     playSound("click")
     
-    // Navigate to the lobby
-    router.push(
-      `/lobby?code=${roomCode}&username=${encodeURIComponent(username)}&subject=${selectedCategory}&difficulty=${selectedDifficulty}&host=true`
-    )
+    // Navigate directly to the game using the dynamic route
+    router.push(`/game/${roomCode}?${params.toString()}`)
   }
 
   return (
-    <div className="w-full max-w-lg space-y-6 p-6 bg-gray-900/40 backdrop-blur-xl rounded-xl border border-gray-800/50 shadow-lg">
+    <div className="glass-form space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-white mb-2">Create a New Quiz Room</h2>
         <p className="text-gray-300">Set up your room and invite friends to join!</p>
@@ -130,8 +138,9 @@ export default function CreateRoomForm() {
             setError("")
           }}
           placeholder="Enter your name"
-          className="bg-gray-800/50 backdrop-blur-sm border-gray-700 focus:ring-purple-500 text-white placeholder-gray-400"
+          className="glass-input text-white placeholder-gray-400"
         />
+        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
 
       {/* Difficulty Selection */}
@@ -149,7 +158,7 @@ export default function CreateRoomForm() {
                 setSelectedDifficulty(id)
                 playSound("click")
               }}
-              className={`p-4 rounded-lg border backdrop-blur-sm flex flex-col items-center text-center transition-colors
+              className={`glass-panel-hover p-4 rounded-lg flex flex-col items-center text-center
                 ${className} ${selectedDifficulty === id ? "selected shadow-lg" : ""}`}
             >
               {icon}
@@ -175,20 +184,15 @@ export default function CreateRoomForm() {
                 setSelectedCategory(id)
                 playSound("click")
               }}
-              className={`p-4 rounded-lg border flex flex-col items-center text-center transition-colors
+              className={`glass-panel-hover p-4 rounded-lg flex flex-col items-center text-center
                 ${className} ${selectedCategory === id ? "selected" : ""}`}
             >
               {icon}
-              <span className="mt-1 font-medium">{label}</span>
+              <span className="mt-1 font-medium text-white">{label}</span>
             </motion.button>
           ))}
         </div>
       </div>
-
-      {/* Error Message */}
-      {error && (
-        <p className="text-red-500 text-sm text-center">{error}</p>
-      )}
 
       {/* Create Button */}
       <motion.button
@@ -196,10 +200,10 @@ export default function CreateRoomForm() {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 
-          text-white font-medium py-4 px-8 rounded-lg flex items-center justify-center space-x-3"
+          text-white font-medium py-4 px-8 rounded-lg flex items-center justify-center space-x-3 glass-button"
       >
         <GraduationCap className="h-5 w-5" />
-        <span>Create Room</span>
+        <span>Start Quiz</span>
       </motion.button>
     </div>
   )
