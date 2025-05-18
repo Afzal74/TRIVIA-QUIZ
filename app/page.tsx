@@ -487,7 +487,21 @@ export default function HomePage() {
                           maxLength={6}
                           autoComplete="off"
                         />
-                        <p className="text-xs text-gray-400 mt-1">Enter a 6-character room code (e.g., ABC123)</p>
+                        <div className="mt-1 flex justify-between items-center">
+                          <p className="text-xs text-gray-400">Enter a 6-character room code (e.g., ABC123)</p>
+                          {error && (
+                            <button
+                              onClick={() => {
+                                setIsCreating(true);
+                                setError("");
+                                playSound("click");
+                              }}
+                              className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                            >
+                              Create a room instead?
+                            </button>
+                          )}
+                        </div>
                       </div>
                     )}
 
