@@ -1,12 +1,19 @@
+"use client"
+
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Trophy, Users, Brain, Sparkles, Zap } from "lucide-react"
-import BackButton from "@/components/back-button"
+import { useRouter } from "next/navigation"
 
 export default function AboutPage() {
+  const router = useRouter()
+
+  const handleStartPlaying = () => {
+    router.push('/')
+  }
+
   return (
     <>
-      <BackButton />
       <Header />
       <main className="min-h-screen pt-10 pb-15">
         <section className="relative py-20 overflow-hidden">
@@ -135,7 +142,10 @@ export default function AboutPage() {
                 and become part of our growing community of quiz enthusiasts!
               </p>
               <div className="inline-block gradient-border p-1 rounded-full">
-                <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-all">
+                <button 
+                  onClick={handleStartPlaying}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-all"
+                >
                   Start Playing Now
                 </button>
               </div>

@@ -3,7 +3,6 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import NotesSection from "@/components/home/notes-section"
-import BackButton from "@/components/back-button"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 
@@ -12,7 +11,6 @@ export default function NotesPage() {
 
   return (
     <>
-      <BackButton />
       <Header />
       <main className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">

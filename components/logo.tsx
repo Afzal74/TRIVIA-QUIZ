@@ -83,10 +83,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
   }
 
   const primaryGlowVariants = {
-    initial: { scale: 0.8, opacity: 0.5 },
+    initial: { scale: 0.8, opacity: 0.3 },
     animate: {
-      scale: [0.8, 1.3, 0.8],
-      opacity: [0.5, 0.9, 0.5],
+      scale: [0.8, 1.2, 0.8],
+      opacity: [0.3, 0.5, 0.3],
       transition: {
         duration: 3,
         repeat: Infinity,
@@ -94,8 +94,8 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
       }
     },
     hover: {
-      scale: 1.4,
-      opacity: 0.95,
+      scale: 1.3,
+      opacity: 0.6,
       transition: {
         duration: 0.3,
         ease: "easeOut"
@@ -104,10 +104,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
   }
 
   const secondaryGlowVariants = {
-    initial: { scale: 1, opacity: 0.3 },
+    initial: { scale: 1, opacity: 0.2 },
     animate: {
-      scale: [1, 1.6, 1],
-      opacity: [0.3, 0.7, 0.3],
+      scale: [1, 1.4, 1],
+      opacity: [0.2, 0.4, 0.2],
       transition: {
         duration: 4,
         repeat: Infinity,
@@ -116,8 +116,8 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
       }
     },
     hover: {
-      scale: 1.7,
-      opacity: 0.8,
+      scale: 1.5,
+      opacity: 0.5,
       transition: {
         duration: 0.3,
         ease: "easeOut"
@@ -139,16 +139,16 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
         variants={animate ? primaryGlowVariants : undefined}
         className="absolute inset-0 blur-2xl"
         style={{
-          background: `linear-gradient(to right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.accent}, 0.9))`,
-          boxShadow: `0 0 30px rgba(${activeColors.primary}, 0.4)`
+          background: `linear-gradient(to right, rgba(${activeColors.primary}, 0.4), rgba(${activeColors.secondary}, 0.4), rgba(${activeColors.accent}, 0.4))`,
+          boxShadow: `0 0 30px rgba(${activeColors.primary}, 0.2)`
         }}
       />
       <motion.div
         variants={animate ? secondaryGlowVariants : undefined}
         className="absolute inset-0 blur-3xl mix-blend-screen"
         style={{
-          background: `linear-gradient(to right, rgba(${activeColors.accent}, 0.7), rgba(${activeColors.primary}, 0.7), rgba(${activeColors.secondary}, 0.7))`,
-          boxShadow: `0 0 40px rgba(${activeColors.accent}, 0.4)`
+          background: `linear-gradient(to right, rgba(${activeColors.accent}, 0.3), rgba(${activeColors.primary}, 0.3), rgba(${activeColors.secondary}, 0.3))`,
+          boxShadow: `0 0 40px rgba(${activeColors.accent}, 0.2)`
         }}
       />
       
@@ -164,9 +164,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
                 variants={animate ? letterVariants : undefined}
                 className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
                 style={{
-                  background: `linear-gradient(to bottom right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.primary}, 0.6))`,
-                  textShadow: `0 0 20px rgba(${activeColors.primary}, 0.3)`,
-                  WebkitBackgroundClip: "text"
+                  background: `linear-gradient(to bottom right, rgba(${activeColors.primary}, 1), rgba(${activeColors.primary}, 0.8))`,
+                  textShadow: `0 0 20px rgba(${activeColors.primary}, 0.2)`,
+                  WebkitBackgroundClip: "text",
+                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
                 }}
               >
                 {letter}
@@ -183,9 +184,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
                 variants={animate ? letterVariants : undefined}
                 className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
                 style={{
-                  background: `linear-gradient(to bottom right, rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.secondary}, 0.6))`,
-                  textShadow: `0 0 20px rgba(${activeColors.secondary}, 0.3)`,
-                  WebkitBackgroundClip: "text"
+                  background: `linear-gradient(to bottom right, rgba(${activeColors.secondary}, 1), rgba(${activeColors.secondary}, 0.8))`,
+                  textShadow: `0 0 20px rgba(${activeColors.secondary}, 0.2)`,
+                  WebkitBackgroundClip: "text",
+                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
                 }}
               >
                 {letter}
@@ -206,8 +208,9 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
               <span 
                 className="text-sm font-medium bg-clip-text text-transparent"
                 style={{
-                  background: `linear-gradient(to right, rgba(${activeColors.primary}, 0.9), rgba(${activeColors.secondary}, 0.9), rgba(${activeColors.accent}, 0.9))`,
-                  WebkitBackgroundClip: "text"
+                  background: `linear-gradient(to right, rgba(${activeColors.primary}, 1), rgba(${activeColors.secondary}, 1), rgba(${activeColors.accent}, 1))`,
+                  WebkitBackgroundClip: "text",
+                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
                 }}
               >
                 {subtitles[currentSubtitleIndex]}
@@ -220,7 +223,7 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
         <motion.div
           animate={{ 
             scale: [1, 1.3, 1],
-            opacity: [0.8, 1, 0.8]
+            opacity: [0.6, 0.8, 0.6]
           }}
           transition={{ 
             duration: 2,
@@ -231,13 +234,13 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
           className="absolute -right-1 -top-1 w-2.5 h-2.5 rounded-full"
           style={{
             background: `rgba(${activeColors.accent}, 1)`,
-            boxShadow: `0 0 15px rgba(${activeColors.accent}, 0.7)`
+            boxShadow: `0 0 15px rgba(${activeColors.accent}, 0.4)`
           }}
         />
         <motion.div
           animate={{ 
             scale: [1, 1.3, 1],
-            opacity: [0.8, 1, 0.8]
+            opacity: [0.6, 0.8, 0.6]
           }}
           transition={{ 
             duration: 2,
@@ -248,7 +251,7 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
           className="absolute -left-1 -bottom-1 w-2.5 h-2.5 rounded-full"
           style={{
             background: `rgba(${activeColors.primary}, 1)`,
-            boxShadow: `0 0 15px rgba(${activeColors.primary}, 0.7)`
+            boxShadow: `0 0 15px rgba(${activeColors.primary}, 0.4)`
           }}
         />
 
@@ -258,9 +261,9 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
           initial={false}
           animate={{
             background: [
-              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.4) 0%, transparent 50%)`,
-              `radial-gradient(circle at 70% 60%, rgba(${activeColors.secondary}, 0.4) 0%, transparent 50%)`,
-              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.4) 0%, transparent 50%)`
+              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.2) 0%, transparent 50%)`,
+              `radial-gradient(circle at 70% 60%, rgba(${activeColors.secondary}, 0.2) 0%, transparent 50%)`,
+              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.2) 0%, transparent 50%)`
             ]
           }}
           transition={{

@@ -1,14 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { User } from "lucide-react"
 import { useEffect, useState } from "react"
 import ThemeColorSelector from "./theme-color-selector"
+import { useTheme } from "./theme-provider"
 
 export default function Header() {
   const { scrollY } = useScroll()
   const [isScrolled, setIsScrolled] = useState(false)
+  const { colors } = useTheme()
 
   // Header background opacity based on scroll
   const headerBgOpacity = useTransform(scrollY, [0, 100], [0, 1])
@@ -60,18 +62,100 @@ export default function Header() {
             transition={{ duration: 0.5 }}
             className="flex flex-col"
           >
-            <Link href="/" className="text-xl font-bold gradient-text">
-              QuizVerse
+            <Link href="/" className="flex flex-col hover:opacity-80 transition-opacity group">
+              <div className="relative">
+                {/* Animated glow effects */}
+                <motion.div
+                  className="absolute -inset-2 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  animate={{
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  style={{
+                    background: `linear-gradient(45deg, rgba(${colors.primary}, 0.2), rgba(${colors.secondary}, 0.2))`,
+                  }}
+                />
+                <motion.div
+                  className="absolute -inset-2 rounded-lg blur-lg"
+                  animate={{
+                    opacity: [0.1, 0.3, 0.1],
+                    scale: [1.1, 1.3, 1.1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5
+                  }}
+                  style={{
+                    background: `linear-gradient(-45deg, rgba(${colors.secondary}, 0.2), rgba(${colors.accent}, 0.2))`,
+                  }}
+                />
+                
+                <div className="relative">
+                  <motion.div 
+                    className="text-2xl font-bold"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {/* Text with animated glow */}
+                    <motion.span 
+                      className="bg-clip-text text-transparent bg-gradient-to-r inline-block" 
+                      style={{
+                        backgroundImage: `linear-gradient(to right, rgb(${colors.primary}), rgb(${colors.secondary}))`,
+                      }}
+                      animate={{
+                        textShadow: [
+                          `0 0 10px rgba(${colors.primary}, 0.2)`,
+                          `0 0 20px rgba(${colors.primary}, 0.4)`,
+                          `0 0 10px rgba(${colors.primary}, 0.2)`
+                        ]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      QuizVerse
+                    </motion.span>
+                  </motion.div>
+                  <motion.p 
+                    className="text-sm bg-clip-text text-transparent bg-gradient-to-r relative z-10"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, rgb(${colors.secondary}), rgb(${colors.accent}))`,
+                    }}
+                    animate={{
+                      textShadow: [
+                        `0 0 8px rgba(${colors.secondary}, 0.2)`,
+                        `0 0 15px rgba(${colors.secondary}, 0.3)`,
+                        `0 0 8px rgba(${colors.secondary}, 0.2)`
+                      ]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.5
+                    }}
+                  >
+                    Knowledge
+                  </motion.p>
+                </div>
+              </div>
             </Link>
-            <p className="text-sm bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-cyan-500">
-              Knowledge
-            </p>
           </motion.div>
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-2">
+            <NavLink href="/">Home</NavLink>
             <NavLink href="/notes">Notes</NavLink>
-            <NavButton onClick={() => scrollToSection('leaderboard-section')}>Leaderboard</NavButton>
+            <NavLink href="/#leaderboard-section">Leaderboard</NavLink>
             <NavLink href="/about">About</NavLink>
           </div>
 
@@ -85,7 +169,7 @@ export default function Header() {
             >
               <Link
                 href="/profile"
-                className={`flex items-center justify-center rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:bg-gray-700/60 hover:border-gray-600/50 transition-all duration-300 ${
+                className={`flex items-center justify-center rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:bg-gray-700/60 hover:border-gray-600/50 transition-all duration-300 cursor-pointer ${
                   isScrolled ? "w-9 h-9" : "w-10 h-10"
                 }`}
               >
@@ -113,7 +197,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     >
       <Link
         href={href}
-        className="text-gray-300 hover:text-white transition-all duration-300 relative group px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm"
+        className="text-gray-300 hover:text-white transition-all duration-300 relative group px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm cursor-pointer"
       >
         {children}
         <motion.div
