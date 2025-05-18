@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Crown, Medal, Award } from "lucide-react"
+import { Crown, Medal, Award, Users } from "lucide-react"
 
 // Mock data for recent winners
 const mockWinners = [
@@ -18,11 +18,22 @@ const mockWinners = [
   { id: 10, name: "TriviaGuru", score: 750, games: 5, winRate: 60 },
 ]
 
+// Mock total players data
+const TOTAL_PLAYERS = 15000;
+const USER_POSITION = 9300;
+
 export default function RecentWinnersLeaderboard() {
   const [winners, setWinners] = useState(mockWinners)
   const [filter, setFilter] = useState<"score" | "games" | "winRate">("score")
+  const [username, setUsername] = useState("")
 
   useEffect(() => {
+    // Get username from localStorage
+    const storedUsername = localStorage.getItem("quizverse-username")
+    if (storedUsername) {
+      setUsername(storedUsername)
+    }
+
     // Sort winners based on the selected filter
     const sortedWinners = [...mockWinners].sort((a, b) => b[filter] - a[filter])
     setWinners(sortedWinners)
@@ -67,7 +78,7 @@ export default function RecentWinnersLeaderboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            className={`flex items-center p-3 backdrop-blur-xl ${
+            className={`flex items-center p-3 backdrop-blur-xl leaderboard-item ${
               index < 3 
                 ? "bg-gradient-to-r from-gray-800/60 to-gray-900/60 border border-gray-700/50 shadow-lg" 
                 : "bg-gray-800/40"
@@ -122,6 +133,38 @@ export default function RecentWinnersLeaderboard() {
             </div>
           </motion.div>
         ))}
+
+        {/* User's Global Position */}
+        <div className="mt-6 p-4 bg-gray-800/30 border border-gray-700/50 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Users className="h-5 w-5 text-purple-400" />
+              <div>
+                <div className="text-sm text-gray-400">Your Global Position</div>
+                <div className="text-lg font-bold text-white">
+                  {USER_POSITION.toLocaleString()}
+                  <span className="text-sm text-gray-400 ml-1">
+                    of {TOTAL_PLAYERS.toLocaleString()} players
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-gray-400">Top</div>
+              <div className="text-lg font-bold text-purple-400">
+                {Math.round((USER_POSITION / TOTAL_PLAYERS) * 100)}%
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 h-2 bg-gray-700 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${100 - (USER_POSITION / TOTAL_PLAYERS) * 100}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

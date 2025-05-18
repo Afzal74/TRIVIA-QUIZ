@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { mockQuestions } from "@/data/mock-questions"
 import QuizLeaderboard from "./quiz-leaderboard"
+import { CheckCircle2, XCircle } from "lucide-react"
 
 interface Player {
   id: string
@@ -27,76 +28,122 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
   const [gameEnded, setGameEnded] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [answerSubmitted, setAnswerSubmitted] = useState(false)
+  const [showExplanation, setShowExplanation] = useState(false)
+  const [quizEndedEarly, setQuizEndedEarly] = useState(false)
 
-  const questions = category === "all" 
-    ? Object.values(mockQuestions).flat()
-    : mockQuestions[category] || []
+  // Get questions for the selected category and shuffle them
+  const questions = useMemo(() => {
+    // For "all" category, get all questions
+    let selectedQuestions = category === "all"
+      ? Object.values(mockQuestions).flat()
+      : mockQuestions[category] || [];
+    
+    // Shuffle the questions
+    selectedQuestions = [...selectedQuestions].sort(() => Math.random() - 0.5);
+    
+    // Limit to 15 questions maximum
+    return selectedQuestions.slice(0, 15);
+  }, [category]);
 
-  const currentQuestion = questions[currentQuestionIndex]
-  const isLastQuestion = currentQuestionIndex === questions.length - 1
-  const isFinalRound = currentQuestionIndex === questions.length - 1
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const isCorrect = selectedAnswer === currentQuestion?.correctAnswer;
 
   useEffect(() => {
     if (answerSubmitted) {
+      // Show explanation first
+      setShowExplanation(true);
+      
+      // Then show leaderboard after delay
       const timer = setTimeout(() => {
-        setShowLeaderboard(true)
-      }, 2000)
-      return () => clearTimeout(timer)
+        setShowLeaderboard(true);
+        setShowExplanation(false);
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [answerSubmitted])
+  }, [answerSubmitted]);
 
   const handleAnswerSelect = (answer: string) => {
-    if (answerSubmitted) return
+    if (answerSubmitted) return;
     
-    setSelectedAnswer(answer)
-    setAnswerSubmitted(true)
+    setSelectedAnswer(answer);
+    setAnswerSubmitted(true);
 
-    // Simulate other players answering
+    // Update player scores - double points for last question
+    const pointsForQuestion = isLastQuestion ? 200 : 100;
+    
     const updatedPlayers = players.map(player => {
       if (player.id === "user") {
         return {
           ...player,
-          score: player.score + (answer === currentQuestion.correctAnswer ? 
-            (isFinalRound ? 200 : 100) : 0),
+          score: player.score + (answer === currentQuestion.correctAnswer ? pointsForQuestion : 0),
           lastAnswerCorrect: answer === currentQuestion.correctAnswer,
           lastAnswerTime: Date.now()
         }
       }
       // Simulate other players' answers
-      const correct = Math.random() > 0.5
-      const answerTime = Date.now() + Math.random() * 2000
+      const correct = Math.random() > 0.5;
+      const answerTime = Date.now() + Math.random() * 2000;
       return {
         ...player,
-        score: player.score + (correct ? (isFinalRound ? 200 : 100) : 0),
+        score: player.score + (correct ? pointsForQuestion : 0),
         lastAnswerCorrect: correct,
         lastAnswerTime: answerTime
       }
-    })
+    });
 
-    setPlayers(updatedPlayers)
-  }
+    setPlayers(updatedPlayers);
+  };
 
   const handleContinue = () => {
-    if (isLastQuestion) {
-      setGameEnded(true)
+    if (isLastQuestion || quizEndedEarly) {
+      setGameEnded(true);
     } else {
-      setCurrentQuestionIndex(prev => prev + 1)
-      setShowLeaderboard(false)
-      setSelectedAnswer(null)
-      setAnswerSubmitted(false)
+      setCurrentQuestionIndex(prev => prev + 1);
+      setShowLeaderboard(false);
+      setSelectedAnswer(null);
+      setAnswerSubmitted(false);
+      setShowExplanation(false);
     }
-  }
+  };
+
+  const handleEndQuiz = () => {
+    setQuizEndedEarly(true);
+    setGameEnded(true);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <AnimatePresence mode="wait">
         {showLeaderboard ? (
-          <QuizLeaderboard
-            key="leaderboard"
-            players={players}
-            isFinalLeaderboard={gameEnded}
-            onContinue={gameEnded ? onGameEnd : handleContinue}
-          />
+          <motion.div className="space-y-6">
+            <QuizLeaderboard
+              key="leaderboard"
+              players={players}
+              isFinalLeaderboard={gameEnded}
+              onContinue={gameEnded ? onGameEnd : handleContinue}
+            />
+            {!gameEnded && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-center space-x-4"
+              >
+                <button
+                  onClick={handleEndQuiz}
+                  className="glass-button-secondary px-6 py-2 text-white font-medium"
+                >
+                  End Quiz
+                </button>
+                <button
+                  onClick={handleContinue}
+                  className="glass-button px-6 py-2 text-white font-medium"
+                >
+                  Next Question
+                </button>
+              </motion.div>
+            )}
+          </motion.div>
         ) : (
           <motion.div
             key="question"
@@ -110,7 +157,7 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
               <span className="text-sm text-gray-400">
                 Question {currentQuestionIndex + 1} of {questions.length}
               </span>
-              {isFinalRound && (
+              {isLastQuestion && (
                 <span className="text-sm text-purple-400 font-medium">
                   Final Round - Double Points!
                 </span>
@@ -121,27 +168,67 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
             <h2 className="text-xl font-medium mb-6">{currentQuestion.question}</h2>
 
             {/* Options */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-3">
               {currentQuestion.options.map((option, index) => (
                 <motion.button
                   key={option}
                   onClick={() => handleAnswerSelect(option)}
                   disabled={answerSubmitted}
-                  className={`glass-panel-hover p-4 text-left rounded-lg transition-colors
+                  className={`w-full glass-panel-hover p-4 text-left rounded-lg transition-all duration-200
                     ${answerSubmitted && option === currentQuestion.correctAnswer
-                      ? "border-green-500/50 bg-green-500/10"
-                      : answerSubmitted && option === selectedAnswer
-                      ? "border-red-500/50 bg-red-500/10"
-                      : ""
+                      ? "border-green-500/50 bg-green-500/10 hover:bg-green-500/20"
+                      : answerSubmitted && option === selectedAnswer && option !== currentQuestion.correctAnswer
+                      ? "border-red-500/50 bg-red-500/10 hover:bg-red-500/20"
+                      : "hover:bg-gray-800/50"
                     }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <span className="font-medium">{option}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{option}</span>
+                    {answerSubmitted && option === currentQuestion.correctAnswer && (
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    )}
+                    {answerSubmitted && option === selectedAnswer && option !== currentQuestion.correctAnswer && (
+                      <XCircle className="h-5 w-5 text-red-500" />
+                    )}
+                  </div>
                 </motion.button>
               ))}
             </div>
+
+            {/* Answer Explanation */}
+            {showExplanation && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`mt-6 p-4 rounded-lg ${
+                  isCorrect ? "bg-green-900/20 border border-green-500/30" : "bg-red-900/20 border border-red-500/30"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  {isCorrect ? (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <h3 className="font-medium text-green-400">Correct!</h3>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-5 w-5 text-red-500" />
+                      <h3 className="font-medium text-red-400">Incorrect</h3>
+                    </>
+                  )}
+                </div>
+                <p className="text-gray-300">
+                  {currentQuestion.explanation || (
+                    isCorrect 
+                      ? `That's right! "${currentQuestion.correctAnswer}" is the correct answer.`
+                      : `The correct answer is "${currentQuestion.correctAnswer}".`
+                  )}
+                </p>
+              </motion.div>
+            )}
 
             {/* Timer Bar */}
             {!answerSubmitted && (
