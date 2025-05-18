@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { User, History, Trophy, Users, ArrowRight } from "lucide-react"
+import { User, History, Trophy, Users, ArrowRight, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Logo from "@/components/logo"
+import Link from "next/link"
 
 export default function ProfilePage() {
   const [username, setUsername] = useState("")
@@ -38,6 +39,15 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
+        {/* Back Button */}
+        <Link
+          href="/"
+          className="inline-flex items-center text-gray-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5 mr-1" />
+          Back to Home
+        </Link>
+
         {/* Logo */}
         <div className="flex justify-center mb-8 p-6 rounded-2xl bg-gray-900/30 backdrop-blur-md border border-gray-800/50">
           <Logo className="h-16 w-auto" useFixedColors={true} />
