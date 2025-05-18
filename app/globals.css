@@ -1,0 +1,377 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Base color palette */
+  --foreground: 255, 255, 255;
+  --background: 0, 0, 0;
+  --primary: 138, 43, 226;
+  --secondary: 255, 0, 128;
+  --accent: 0, 255, 255;
+  --muted: 51, 65, 85;
+  --success: 34, 197, 94;
+  --warning: 245, 158, 11;
+  --error: 239, 68, 68;
+  --card: 17, 24, 39;
+  --card-foreground: 255, 255, 255;
+  --border: 31, 41, 55;
+  --input: 31, 41, 55;
+  --ring: 138, 43, 226;
+  --radius: 0.5rem;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  )
+  rgb(var(--background-start-rgb));
+}
+
+/* Custom cursor */
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  transition: transform 0.15s ease-out;
+}
+
+.cursor-outline {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transition: all 0.2s ease-out;
+}
+
+/* Add hover effect for interactive elements */
+a:hover ~ .custom-cursor .cursor-dot,
+button:hover ~ .custom-cursor .cursor-dot {
+  transform: scale(1.5);
+}
+
+a:hover ~ .custom-cursor .cursor-outline,
+button:hover ~ .custom-cursor .cursor-outline {
+  transform: scale(1.2);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Animated background */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -10;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(to right, rgba(var(--primary), 0.2), rgba(var(--secondary), 0.2));
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(to right, rgb(var(--primary)), rgb(var(--secondary)));
+}
+
+/* Gradient border */
+.gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  padding: 1px;
+  background: linear-gradient(to right, rgb(var(--primary)), rgb(var(--secondary)));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Shadow effects */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(var(--primary), 0.2);
+}
+
+.shadow-glow-primary {
+  box-shadow: 0 0 15px rgba(var(--primary), 0.3);
+}
+
+.shadow-glow-success {
+  box-shadow: 0 0 15px rgba(var(--success), 0.3);
+}
+
+.shadow-glow-error {
+  box-shadow: 0 0 15px rgba(var(--error), 0.3);
+}
+
+/* Timer circle */
+.countdown-container {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+}
+
+.countdown-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.countdown-bg {
+  fill: none;
+  stroke: rgb(31, 41, 55);
+  stroke-width: 5;
+}
+
+.countdown-progress {
+  fill: none;
+  stroke-width: 5;
+  stroke-dasharray: 283;
+  transition: stroke-dashoffset 1s linear;
+  stroke: url(#countdown-gradient);
+}
+
+.countdown-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Leaderboard */
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  transition: all 0.2s;
+}
+
+.leaderboard-highlight {
+  border-color: rgb(var(--success));
+  background-color: rgba(var(--success), 0.1);
+}
+
+.rank-up {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: rgb(var(--success));
+}
+
+.rank-down {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: rgb(var(--error));
+}
+
+/* Podium animation */
+.podium-animation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 1s;
+}
+
+.first-place {
+  animation: podiumRise 1s ease-out forwards;
+}
+
+.second-place {
+  animation: podiumRise 1s ease-out 0.2s forwards;
+}
+
+.third-place {
+  animation: podiumRise 1s ease-out 0.4s forwards;
+}
+
+@keyframes podiumRise {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Question types */
+.sortable-item {
+  padding: 0.75rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  border-radius: 0.5rem;
+}
+
+.sortable-item.dragging {
+  border-color: rgb(var(--primary));
+  background-color: rgba(31, 41, 55, 0.8);
+  z-index: 10;
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Grid Pattern */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Button Hover Effects */
+.hover-gradient-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-gradient-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.hover-gradient-button:hover::before {
+  left: 100%;
+}
+
+/* Animated Background */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient-bg {
+  background: linear-gradient(-45deg, #6b46c1, #d53f8c, #2563eb, #7c3aed);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* Progress Bar Animation */
+@keyframes progress {
+  from {
+    width: 0;
+  }
+}
+
+.progress-bar {
+  animation: progress 1s ease-out forwards;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  .animated-gradient-bg,
+  .shimmer,
+  .progress-bar {
+    animation: none;
+  }
+  
+  .hover-gradient-button::before {
+    display: none;
+  }
+}
