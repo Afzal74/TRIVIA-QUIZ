@@ -209,7 +209,7 @@ export default function HomePage() {
     setTimeout(() => {
       const room = MOCK_ROOMS[roomCode]
       if (!room) {
-        setError("Room not found")
+        setError("Room not found or Create a room")
         playSound("error")
         setIsLoading(false)
         return
