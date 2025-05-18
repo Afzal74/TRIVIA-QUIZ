@@ -77,7 +77,7 @@ export default function LobbyPage() {
       localStorage.setItem(`quizverse-game-${roomCode}`, JSON.stringify(gameData))
 
       // Navigate to the game page
-      router.push(`/game?code=${roomCode}`)
+      router.push(`/game?code=${roomCode}&username=${encodeURIComponent(username)}`)
       return
     }
 
