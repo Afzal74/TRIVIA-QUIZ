@@ -5,8 +5,11 @@ import Footer from "@/components/footer"
 import NotesSection from "@/components/home/notes-section"
 import BackButton from "@/components/back-button"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 export default function NotesPage() {
+  const router = useRouter()
+
   return (
     <>
       <BackButton />

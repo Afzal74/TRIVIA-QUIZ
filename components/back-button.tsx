@@ -3,15 +3,13 @@
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { useEffect } from "react"
 
 export default function BackButton() {
+  const router = useRouter()
+
   const handleBack = () => {
-    if (window.history.length > 2) {
-      window.history.back()
-    } else {
-      // If no history, go to home page
-      window.location.href = "/"
-    }
+    window.history.go(-1)
   }
 
   return (
