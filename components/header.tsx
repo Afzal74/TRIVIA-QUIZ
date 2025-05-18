@@ -227,7 +227,7 @@ export default function Header() {
             <motion.div
               className="absolute right-0 top-0 h-full w-64 bg-gray-900/95 border-l border-gray-800 shadow-xl"
             >
-              <div className="flex flex-col p-6 space-y-4 mt-[50px]">
+              <div className="flex flex-col p-6 pt-[50px] space-y-4">
                 <MobileNavLink href="/" onClick={() => setIsMobileMenuOpen(false)}>
                   Home
                 </MobileNavLink>
@@ -273,25 +273,15 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 function MobileNavLink({ href, onClick, children }: { href: string; onClick: () => void; children: React.ReactNode }) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.05, x: 5 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm ${
+        href === "/" ? "mt-[50px]" : ""
+      }`}
     >
-      <Link
-        href={href}
-        onClick={onClick}
-        className="block text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-gray-800/50 backdrop-blur-sm relative group"
-      >
-        {children}
-        <motion.div
-          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100"
-          initial={{ scaleX: 0 }}
-          whileHover={{ scaleX: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-      </Link>
-    </motion.div>
+      {children}
+    </Link>
   )
 }
 

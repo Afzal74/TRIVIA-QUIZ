@@ -84,10 +84,10 @@ export default function RulesSection() {
                   className="flex items-start transition-all duration-200 hover:bg-purple-900/20 p-2 rounded-md cursor-default"
                   variants={listItemVariants}
                 >
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>
+                <span className="text-purple-400 mr-2">•</span>
+                <span>
                     <strong className="text-purple-300">{item.title}:</strong> {item.content}
-                  </span>
+                </span>
                 </motion.li>
               ))}
             </motion.ul>
@@ -125,10 +125,10 @@ export default function RulesSection() {
                   className="flex items-start transition-all duration-200 hover:bg-pink-900/20 p-2 rounded-md cursor-default"
                   variants={listItemVariants}
                 >
-                  <span className="text-pink-400 mr-2">•</span>
-                  <span>
+                <span className="text-pink-400 mr-2">•</span>
+                <span>
                     <strong className="text-pink-300">{item.title}:</strong> {item.content}
-                  </span>
+                </span>
                 </motion.li>
               ))}
             </motion.ul>
@@ -166,10 +166,10 @@ export default function RulesSection() {
                   className="flex items-start transition-all duration-200 hover:bg-cyan-900/20 p-2 rounded-md cursor-default"
                   variants={listItemVariants}
                 >
-                  <span className="text-cyan-400 mr-2">•</span>
-                  <span>
+                <span className="text-cyan-400 mr-2">•</span>
+                <span>
                     <strong className="text-cyan-300">{item.title}:</strong> {item.content}
-                  </span>
+                </span>
                 </motion.li>
               ))}
             </motion.ul>
@@ -207,10 +207,10 @@ export default function RulesSection() {
                   className="flex items-start transition-all duration-200 hover:bg-yellow-900/20 p-2 rounded-md cursor-default"
                   variants={listItemVariants}
                 >
-                  <span className="text-yellow-400 mr-2">•</span>
-                  <span>
+                <span className="text-yellow-400 mr-2">•</span>
+                <span>
                     <strong className="text-yellow-300">{item.title}:</strong> {item.content}
-                  </span>
+                </span>
                 </motion.li>
               ))}
             </motion.ul>
