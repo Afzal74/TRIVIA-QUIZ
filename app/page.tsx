@@ -16,7 +16,8 @@ import RecentWinnersLeaderboard from "@/components/home/recent-winners-leaderboa
 import ProfileSection from "@/components/home/profile-section"
 import DashboardAnalytics from "@/components/home/dashboard-analytics"
 import { ArrowRight, Users, Brain, Trophy, Zap, BookOpen, FlaskRoundIcon as Flask, Globe, Code } from "lucide-react"
-import RulesSection from "@/components/home/rules-section" // Declare the RulesSection variable
+import RulesSection from "@/components/home/rules-section"
+import { useTheme } from "@/components/theme-provider"
 
 // Mock room data
 interface Room {
@@ -145,6 +146,7 @@ export default function HomePage() {
   const router = useRouter()
   const { playSound } = useAudio()
   const { toast } = useToast()
+  const { colors } = useTheme()
 
   // Generate a username if none exists
   useEffect(() => {
@@ -403,7 +405,9 @@ export default function HomePage() {
                   transition={{ duration: 0.5 }}
                 >
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                    Challenge Your <span className="gradient-text">Knowledge</span> in Real-Time Quizzes
+                    Challenge Your <span className="bg-clip-text text-transparent" style={{
+                      backgroundImage: `linear-gradient(to right, rgb(${colors.primary}), rgb(${colors.secondary}), rgb(${colors.accent}))`
+                    }}>Knowledge</span> in Real-Time Quizzes
                   </h1>
                   <p className="text-xl text-gray-300 mb-8">
                     Create a room, invite friends, and compete in exciting multiplayer quiz games across various
@@ -413,7 +417,7 @@ export default function HomePage() {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Button
                       size="lg"
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8"
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 cta-button"
                       onClick={() => {
                         setIsCreating(true)
                         playSound("click")
@@ -479,7 +483,7 @@ export default function HomePage() {
                             }
                           }}
                           placeholder="Enter 6-digit code"
-                          className="w-full h-10 px-3 py-2 text-sm text-white bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          className="w-full h-10 px-3 py-2 text-sm text-white bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 input-hover"
                           maxLength={6}
                           autoComplete="off"
                         />
@@ -580,10 +584,10 @@ export default function HomePage() {
                             type="button"
                             onClick={() => handleDifficultySelect(id as "easy" | "average" | "hard", label)}
                             className={`
-                              group p-3 rounded-lg border transition-all duration-200
+                              group p-3 rounded-lg border transition-all duration-200 category-button
                               flex flex-col items-center cursor-pointer
                               ${difficulty === id 
-                                ? activeClasses
+                                ? `${activeClasses} active`
                                 : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white"
                               }
                             `}
@@ -623,10 +627,10 @@ export default function HomePage() {
                             type="button"
                             onClick={() => handleCategorySelect(id, label)}
                             className={`
-                              group p-3 rounded-lg border transition-all duration-200
+                              group p-3 rounded-lg border transition-all duration-200 category-button
                               flex flex-col items-center cursor-pointer
                               ${subject === id 
-                                ? activeClasses
+                                ? `${activeClasses} active`
                                 : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white"
                               }
                             `}
@@ -656,7 +660,7 @@ export default function HomePage() {
                     )}
 
                     <Button
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 cta-button py-5 text-lg font-medium"
                       onClick={isCreating ? handleCreateRoom : handleJoinRoom}
                       disabled={isLoading}
                     >
@@ -687,7 +691,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
-                className="gradient-border p-6"
+                className="gradient-border p-6 feature-card"
               >
                 <div className="w-12 h-12 rounded-full bg-purple-900/50 flex items-center justify-center mb-4">
                   <Brain className="h-6 w-6 text-purple-400" />
@@ -704,7 +708,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="gradient-border p-6"
+                className="gradient-border p-6 feature-card"
               >
                 <div className="w-12 h-12 rounded-full bg-pink-900/50 flex items-center justify-center mb-4">
                   <Users className="h-6 w-6 text-pink-400" />
@@ -721,7 +725,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
-                className="gradient-border p-6"
+                className="gradient-border p-6 feature-card"
               >
                 <div className="w-12 h-12 rounded-full bg-cyan-900/50 flex items-center justify-center mb-4">
                   <Trophy className="h-6 w-6 text-cyan-400" />
@@ -737,19 +741,19 @@ export default function HomePage() {
         </section>
 
         {/* Dashboard Section */}
-        <section className="py-16 bg-gray-900/30">
+        <section id="leaderboard-section" className="py-16 bg-gray-900/30">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-8">
                 <Tabs defaultValue="leaderboard" className="w-full">
                   <TabsList className="grid grid-cols-2 bg-gray-800">
-                    <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                    <TabsTrigger value="leaderboard" className="tab-trigger">Leaderboard</TabsTrigger>
+                    <TabsTrigger value="analytics" className="tab-trigger">Analytics</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="leaderboard" className="mt-4">
+                  <TabsContent value="leaderboard" className="mt-4 tab-content">
                     <RecentWinnersLeaderboard />
                   </TabsContent>
-                  <TabsContent value="analytics" className="mt-4">
+                  <TabsContent value="analytics" className="mt-4 tab-content">
                     <DashboardAnalytics />
                   </TabsContent>
                 </Tabs>
@@ -778,7 +782,7 @@ export default function HomePage() {
                 </p>
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 cta-button"
                   onClick={() => {
                     setIsCreating(true)
                     playSound("click")
