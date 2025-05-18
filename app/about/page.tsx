@@ -154,9 +154,11 @@ export default function AboutPage() {
                     and become part of our growing community of quiz enthusiasts!
                   </p>
                   <div className="inline-block gradient-border p-1 rounded-full">
-                    <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-all">
-                      Start Playing Now
-                    </button>
+                    <Link href="/">
+                      <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-all">
+                        Start Playing Now
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
