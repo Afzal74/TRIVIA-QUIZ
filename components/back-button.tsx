@@ -3,13 +3,25 @@
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function BackButton() {
   const router = useRouter()
+  const [startedFromHome, setStartedFromHome] = useState(false)
+
+  useEffect(() => {
+    // Check if we started from home page
+    const referrer = document.referrer
+    const isFromHome = referrer.endsWith('/') || referrer === '' || referrer.endsWith('/trivia-quiz')
+    setStartedFromHome(isFromHome)
+  }, [])
 
   const handleBack = () => {
-    window.history.go(-1)
+    if (startedFromHome) {
+      router.push('/')
+    } else {
+      window.history.go(-1)
+    }
   }
 
   return (
