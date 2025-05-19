@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 interface Shape {
   x: number
@@ -12,56 +13,103 @@ interface Shape {
   speedX: number
   speedY: number
   opacity: number
-  type: 'triangle' | 'square' | 'circle'
+  type: 'triangle' | 'square' | 'circle' | 'star'
   colorIndex: number
+  scale: number
+  scaleSpeed: number
 }
 
-export default function AnimatedBackground() {
+interface AnimatedBackgroundProps {
+  className?: string
+  density?: "low" | "medium" | "high"
+  speed?: "slow" | "normal" | "fast"
+  blur?: number
+  opacity?: number
+}
+
+export default function AnimatedBackground({
+  className,
+  density = "medium",
+  speed = "normal",
+  blur = 1,
+  opacity = 0.97
+}: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { colors } = useTheme()
+  const [isReducedMotion, setIsReducedMotion] = useState(false)
+
+  useEffect(() => {
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setIsReducedMotion(mediaQuery.matches)
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsReducedMotion(e.matches)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d", { alpha: false })
     if (!ctx) return
 
-    // Set canvas size
+    // Set canvas size with device pixel ratio for better quality
     const updateCanvasSize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const dpr = window.devicePixelRatio || 1
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      ctx.scale(dpr, dpr)
+      canvas.style.width = `${rect.width}px`
+      canvas.style.height = `${rect.height}px`
     }
     updateCanvasSize()
     window.addEventListener("resize", updateCanvasSize)
 
-    // Create shapes
+    // Create shapes with density settings
     const shapes: Shape[] = []
-    const numberOfShapes = 30 // Reduced number of shapes
+    const densityMap = {
+      low: 20,
+      medium: 30,
+      high: 40
+    }
+    const speedMap = {
+      slow: 0.2,
+      normal: 0.3,
+      fast: 0.4
+    }
+    const numberOfShapes = densityMap[density]
 
     for (let i = 0; i < numberOfShapes; i++) {
-      const shapeTypes: Shape['type'][] = ['triangle', 'square', 'circle']
+      const shapeTypes: Shape['type'][] = ['triangle', 'square', 'circle', 'star']
       shapes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 15 + 10, // Smaller size between 10 and 25
+        size: Math.random() * 15 + 10,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.01, // Slower rotation
-        speedX: (Math.random() - 0.5) * 0.3, // Slower movement
-        speedY: (Math.random() - 0.5) * 0.3, // Slower movement
-        opacity: Math.random() * 0.15 + 0.05, // Lower opacity between 0.05 and 0.2
+        rotationSpeed: (Math.random() - 0.5) * 0.01,
+        speedX: (Math.random() - 0.5) * speedMap[speed],
+        speedY: (Math.random() - 0.5) * speedMap[speed],
+        opacity: Math.random() * 0.15 + 0.05,
         type: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-        colorIndex: Math.floor(Math.random() * 3)
+        colorIndex: Math.floor(Math.random() * 3),
+        scale: 1,
+        scaleSpeed: (Math.random() - 0.5) * 0.01
       })
     }
 
-    // Draw shapes
+    // Draw shapes with improved rendering
     function drawShape(ctx: CanvasRenderingContext2D, shape: Shape) {
       ctx.save()
       ctx.translate(shape.x, shape.y)
       ctx.rotate(shape.rotation)
+      ctx.scale(shape.scale, shape.scale)
 
-      // Get color based on colorIndex with lighter opacity
       const color = shape.colorIndex === 0 
         ? `rgba(${colors.primary}, ${shape.opacity * 0.7})`
         : shape.colorIndex === 1
@@ -84,56 +132,94 @@ export default function AnimatedBackground() {
         case 'circle':
           ctx.arc(0, 0, shape.size / 2, 0, Math.PI * 2)
           break
+        case 'star':
+          const spikes = 5
+          const outerRadius = shape.size / 2
+          const innerRadius = outerRadius / 2
+          for (let i = 0; i < spikes * 2; i++) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius
+            const angle = (Math.PI * i) / spikes
+            if (i === 0) {
+              ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius)
+            } else {
+              ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius)
+            }
+          }
+          break
       }
 
       ctx.fill()
       ctx.restore()
     }
 
-    // Animation function
-    function animate() {
+    // Animation function with improved performance
+    let animationFrameId: number
+    let lastTime = 0
+    const fps = 60
+    const frameInterval = 1000 / fps
+
+    function animate(currentTime: number) {
       if (!canvas || !ctx) return
+
+      const deltaTime = currentTime - lastTime
+      if (deltaTime < frameInterval) {
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
+
+      lastTime = currentTime - (deltaTime % frameInterval)
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       // Update and draw shapes
       shapes.forEach(shape => {
-        // Move shape
-        shape.x += shape.speedX
-        shape.y += shape.speedY
-        shape.rotation += shape.rotationSpeed
+        if (!isReducedMotion) {
+          shape.x += shape.speedX
+          shape.y += shape.speedY
+          shape.rotation += shape.rotationSpeed
+          shape.scale += shape.scaleSpeed
 
-        // Wrap around edges
-        if (shape.x < -shape.size) shape.x = canvas.width + shape.size
-        if (shape.x > canvas.width + shape.size) shape.x = -shape.size
-        if (shape.y < -shape.size) shape.y = canvas.height + shape.size
-        if (shape.y > canvas.height + shape.size) shape.y = -shape.size
+          // Wrap around edges
+          if (shape.x < -shape.size) shape.x = canvas.width + shape.size
+          if (shape.x > canvas.width + shape.size) shape.x = -shape.size
+          if (shape.y < -shape.size) shape.y = canvas.height + shape.size
+          if (shape.y > canvas.height + shape.size) shape.y = -shape.size
 
-        // Draw shape
+          // Scale bounds
+          if (shape.scale > 1.2) shape.scaleSpeed = -Math.abs(shape.scaleSpeed)
+          if (shape.scale < 0.8) shape.scaleSpeed = Math.abs(shape.scaleSpeed)
+        }
+
         drawShape(ctx, shape)
       })
 
-      // Add very subtle glow effect
+      // Add subtle glow effect
       ctx.fillStyle = `rgba(${colors.primary}, 0.01)`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      requestAnimationFrame(animate)
+      animationFrameId = requestAnimationFrame(animate)
     }
 
-    animate()
+    animationFrameId = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener("resize", updateCanvasSize)
+      cancelAnimationFrame(animationFrameId)
     }
-  }, [colors])
+  }, [colors, density, speed, isReducedMotion])
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10"
+      className={cn(
+        "fixed inset-0 -z-10",
+        className
+      )}
       style={{ 
-        background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.97), rgba(17, 24, 39, 0.97))",
-        filter: "blur(1px)" // Slightly increased blur for smoother appearance
+        background: `linear-gradient(to bottom, rgba(0, 0, 0, ${opacity}), rgba(17, 24, 39, ${opacity}))`,
+        filter: `blur(${blur}px)`
       }}
+      aria-hidden="true"
     />
   )
 }
