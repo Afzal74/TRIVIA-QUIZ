@@ -16,7 +16,6 @@ A modern and interactive trivia quiz application built with Next.js.
 - TypeScript
 - Tailwind CSS
 - Framer Motion
-- Firebase
 
 ## Developer
 
