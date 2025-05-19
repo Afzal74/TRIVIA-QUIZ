@@ -4,14 +4,23 @@ import type { FC } from "react"
 import { motion, useAnimationControls } from "framer-motion"
 import { useState } from "react"
 import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 interface LogoProps {
   className?: string
   animate?: boolean
   useFixedColors?: boolean
+  size?: "sm" | "md" | "lg"
+  variant?: "default" | "minimal" | "full"
 }
 
-const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFixedColors = false }) => {
+const Logo: FC<LogoProps> = ({ 
+  className = "h-10 w-auto", 
+  animate = true, 
+  useFixedColors = false,
+  size = "md",
+  variant = "default"
+}) => {
   const [isHovered, setIsHovered] = useState(false)
   const controls = useAnimationControls()
   const { colors } = useTheme()
@@ -30,9 +39,17 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
     "Test Your Knowledge",
     "Challenge Your Mind",
     "Learn & Grow",
-    "Play & Learn Together"
+    "Play & Learn Together",
+    "Join the Quiz Revolution",
+    "Master Your Skills"
   ]
   const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState(0)
+
+  const sizeClasses = {
+    sm: "text-xl",
+    md: "text-2xl",
+    lg: "text-3xl"
+  }
 
   const typewriterVariants = {
     hidden: { width: 0, opacity: 0 },
@@ -127,12 +144,17 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
 
   return (
     <motion.div 
-      className={`relative ${className} select-none cursor-pointer group`}
+      className={cn(
+        "relative select-none cursor-pointer group",
+        className
+      )}
       whileHover="hover"
       initial="initial"
       animate="animate"
       onHoverStart={handleHoverStart}
       onHoverEnd={handleHoverEnd}
+      role="img"
+      aria-label="QuizVerse Logo"
     >
       {/* Enhanced multi-layered animated glow effect */}
       <motion.div
@@ -162,7 +184,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
                 key={i}
                 custom={i}
                 variants={animate ? letterVariants : undefined}
-                className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
+                className={cn(
+                  "font-black tracking-tight bg-clip-text text-transparent",
+                  sizeClasses[size]
+                )}
                 style={{
                   background: `linear-gradient(to bottom right, rgba(${activeColors.primary}, 1), rgba(${activeColors.primary}, 0.8))`,
                   textShadow: `0 0 20px rgba(${activeColors.primary}, 0.2)`,
@@ -182,7 +207,10 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
                 key={i}
                 custom={i + 4}
                 variants={animate ? letterVariants : undefined}
-                className="text-2xl font-black tracking-tight bg-clip-text text-transparent"
+                className={cn(
+                  "font-black tracking-tight bg-clip-text text-transparent",
+                  sizeClasses[size]
+                )}
                 style={{
                   background: `linear-gradient(to bottom right, rgba(${activeColors.secondary}, 1), rgba(${activeColors.secondary}, 0.8))`,
                   textShadow: `0 0 20px rgba(${activeColors.secondary}, 0.2)`,
@@ -197,27 +225,29 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
         </div>
 
         {/* Typewriter effect subtitle */}
-        <div className="h-6 relative">
-          <motion.div
-            initial="hidden"
-            animate={controls}
-            variants={typewriterVariants}
-            className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap overflow-hidden"
-          >
-            {isHovered && (
-              <span 
-                className="text-sm font-medium bg-clip-text text-transparent"
-                style={{
-                  background: `linear-gradient(to right, rgba(${activeColors.primary}, 1), rgba(${activeColors.secondary}, 1), rgba(${activeColors.accent}, 1))`,
-                  WebkitBackgroundClip: "text",
-                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
-                }}
-              >
-                {subtitles[currentSubtitleIndex]}
-              </span>
-            )}
-          </motion.div>
-        </div>
+        {variant !== "minimal" && (
+          <div className="h-6 relative">
+            <motion.div
+              initial="hidden"
+              animate={controls}
+              variants={typewriterVariants}
+              className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap overflow-hidden"
+            >
+              {isHovered && (
+                <span 
+                  className="text-sm font-medium bg-clip-text text-transparent"
+                  style={{
+                    background: `linear-gradient(to right, rgba(${activeColors.primary}, 1), rgba(${activeColors.secondary}, 1), rgba(${activeColors.accent}, 1))`,
+                    WebkitBackgroundClip: "text",
+                    filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
+                  }}
+                >
+                  {subtitles[currentSubtitleIndex]}
+                </span>
+              )}
+            </motion.div>
+          </div>
+        )}
 
         {/* Enhanced decorative elements with more prominent glow */}
         <motion.div
@@ -250,26 +280,8 @@ const Logo: FC<LogoProps> = ({ className = "h-10 w-auto", animate = true, useFix
           }}
           className="absolute -left-1 -bottom-1 w-2.5 h-2.5 rounded-full"
           style={{
-            background: `rgba(${activeColors.primary}, 1)`,
-            boxShadow: `0 0 15px rgba(${activeColors.primary}, 0.4)`
-          }}
-        />
-
-        {/* Additional sparkle effects on hover */}
-        <motion.div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          initial={false}
-          animate={{
-            background: [
-              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.2) 0%, transparent 50%)`,
-              `radial-gradient(circle at 70% 60%, rgba(${activeColors.secondary}, 0.2) 0%, transparent 50%)`,
-              `radial-gradient(circle at 30% 20%, rgba(${activeColors.primary}, 0.2) 0%, transparent 50%)`
-            ]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
+            background: `rgba(${activeColors.secondary}, 1)`,
+            boxShadow: `0 0 15px rgba(${activeColors.secondary}, 0.4)`
           }}
         />
       </div>
