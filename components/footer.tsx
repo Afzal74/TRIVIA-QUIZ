@@ -51,8 +51,9 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="relative bg-gradient-to-b from-gray-900/40 to-black/40 backdrop-blur-xl supports-[backdrop-filter]:bg-background/30 border-t border-gray-800/30">
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/5 via-pink-900/5 to-purple-900/5"></div>
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="md:col-span-1">
@@ -61,10 +62,10 @@ export default function Footer() {
               animate={{ opacity: 1, y: 0 }}
               className="flex items-center mb-4"
             >
-              <Trophy className="h-6 w-6 text-primary mr-2" />
-              <span className="text-xl font-bold tracking-tight">QuizVerse</span>
+              <Trophy className="h-6 w-6 text-primary/80 mr-2" />
+              <span className="text-xl font-bold tracking-tight text-white/90">QuizVerse</span>
             </motion.div>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground/80 mb-6">
               Challenge your friends in real-time multiplayer quizzes. Create a room, invite players, and test your
               knowledge.
             </p>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { usePathname } from "next/navigation"
 
 interface Shape {
   x: number
@@ -25,6 +26,7 @@ interface AnimatedBackgroundProps {
   speed?: "slow" | "normal" | "fast"
   blur?: number
   opacity?: number
+  pauseOnQuiz?: boolean
 }
 
 export default function AnimatedBackground({
@@ -32,11 +34,14 @@ export default function AnimatedBackground({
   density = "medium",
   speed = "normal",
   blur = 1,
-  opacity = 0.97
+  opacity = 0.97,
+  pauseOnQuiz = true
 }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { colors } = useTheme()
   const [isReducedMotion, setIsReducedMotion] = useState(false)
+  const pathname = usePathname()
+  const isQuizPage = pathname?.includes('/quiz') || pathname?.includes('/practice')
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -161,6 +166,12 @@ export default function AnimatedBackground({
     function animate(currentTime: number) {
       if (!canvas || !ctx) return
 
+      // Skip animation if on quiz page and pauseOnQuiz is true
+      if (isQuizPage && pauseOnQuiz) {
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
+
       const deltaTime = currentTime - lastTime
       if (deltaTime < frameInterval) {
         animationFrameId = requestAnimationFrame(animate)
@@ -200,26 +211,27 @@ export default function AnimatedBackground({
       animationFrameId = requestAnimationFrame(animate)
     }
 
+    // Start animation
     animationFrameId = requestAnimationFrame(animate)
 
+    // Cleanup
     return () => {
       window.removeEventListener("resize", updateCanvasSize)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [colors, density, speed, isReducedMotion])
+  }, [colors, density, speed, isReducedMotion, isQuizPage, pauseOnQuiz])
 
   return (
     <canvas
       ref={canvasRef}
       className={cn(
-        "fixed inset-0 -z-10",
+        "fixed inset-0 w-full h-full -z-10",
         className
       )}
-      style={{ 
-        background: `linear-gradient(to bottom, rgba(0, 0, 0, ${opacity}), rgba(17, 24, 39, ${opacity}))`,
-        filter: `blur(${blur}px)`
+      style={{
+        filter: `blur(${blur}px)`,
+        opacity: opacity
       }}
-      aria-hidden="true"
     />
   )
 }

@@ -70,8 +70,8 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
               {/* User Profile Display */}
               <div className="flex items-center space-x-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-                  <User className="w-10 h-10 text-white" />
+                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg text-5xl">
+                  {avatar}
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-white">{username || "Guest User"}</h1>

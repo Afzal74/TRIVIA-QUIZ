@@ -43,8 +43,14 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {/* Audio provider for sound effects and background music */}
           <AudioProvider>
-            {/* Animated background component */}
-            <AnimatedBackground />
+            {/* Animated background component with pause on quiz pages */}
+            <AnimatedBackground 
+              density="medium"
+              speed="normal"
+              blur={1}
+              opacity={0.97}
+              pauseOnQuiz={true}
+            />
             {/* Global header navigation */}
             <Header />
             {/* Main content area with top padding for header */}

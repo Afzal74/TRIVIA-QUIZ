@@ -177,7 +177,7 @@ export default function HomePage() {
   const [difficulty, setDifficulty] = useState<"easy" | "average" | "hard">("average")
   const [subject, setSubject] = useState<string>("all")
   const [isLoading, setIsLoading] = useState(false)
-  const [numBots, setNumBots] = useState(0)
+  const [numBots, setNumBots] = useState(7)
   const [maxRounds, setMaxRounds] = useState(10)
 
   // Hooks for routing, audio, toast notifications, and theme
@@ -583,23 +583,29 @@ export default function HomePage() {
                           <label htmlFor="numBots" className="block text-sm font-medium text-gray-300 mb-1">
                             Add Bots (0-15)
                           </label>
-                          <div className="flex items-center gap-4">
-                            <Input
-                              id="numBots"
-                              name="numBots"
-                              type="number"
-                              min={0}
-                              max={15}
-                              value={numBots}
-                              onChange={(e) => {
-                                const value = Math.min(15, Math.max(0, parseInt(e.target.value) || 0))
-                                console.log("Bot count input:", value)
-                                setNumBots(value)
-                              }}
-                              className="bg-gray-800/50 border-gray-700 text-white"
-                              disabled={isLoading}
-                            />
-                            <span className="text-sm text-gray-400">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-4">
+                              <input
+                                type="range"
+                                id="numBots"
+                                name="numBots"
+                                min={0}
+                                max={15}
+                                value={numBots}
+                                onChange={(e) => {
+                                  const value = parseInt(e.target.value)
+                                  setNumBots(value)
+                                }}
+                                style={{
+                                  background: `linear-gradient(to right, rgb(147, 51, 234) ${(numBots / 15) * 100}%, rgb(75, 85, 99) ${(numBots / 15) * 100}%)`
+                                }}
+                                className="w-full h-2 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-500 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
+                              />
+                              <span className="text-sm font-medium text-purple-400 min-w-[3rem] text-center">
+                                {numBots}
+                              </span>
+                            </div>
+                            <span className="text-sm text-gray-400 block">
                               {numBots > 0 ? `${numBots} bot${numBots === 1 ? '' : 's'} will join` : 'No bots'}
                             </span>
                           </div>

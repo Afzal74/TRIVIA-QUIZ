@@ -12,6 +12,13 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { colors } = useTheme()
+  const [avatarEmoji, setAvatarEmoji] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAvatarEmoji(localStorage.getItem("quizverse-avatar-emoji"));
+    }
+  }, []);
 
   // Header background opacity based on scroll
   const headerBgOpacity = useTransform(scrollY, [0, 100], [0, 1])
@@ -176,9 +183,9 @@ export default function Header() {
                     isScrolled ? "w-9 h-9" : "w-10 h-10"
                   }`}
                 >
-                  <User className={`text-gray-100 transition-all duration-300 ${
-                    isScrolled ? "w-4 h-4" : "w-5 h-5"
-                  }`} />
+                  <div className="flex items-center justify-center w-full h-full">
+                    <User className={`text-gray-100 transition-all duration-300 ${isScrolled ? "w-4 h-4" : "w-5 h-5"}`} />
+                  </div>
                   <motion.div
                     className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
                     style={{ mixBlendMode: "overlay" }}
