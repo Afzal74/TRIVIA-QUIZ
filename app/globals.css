@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Root CSS Variables
+ * Defines the application's color scheme and design tokens
+ * - foreground: Text color
+ * - background: Background color
+ * - primary: Main brand color (purple)
+ * - secondary: Secondary brand color (pink)
+ * - accent: Accent color (cyan)
+ * - muted: Muted text color
+ * - success: Success state color
+ * - warning: Warning state color
+ * - error: Error state color
+ * - card: Card background color
+ * - card-foreground: Card text color
+ * - border: Border color
+ * - input: Input field color
+ * - ring: Focus ring color
+ * - radius: Border radius
+ */
 :root {
   /* Base color palette */
   --foreground: 255, 255, 255;
@@ -24,64 +43,90 @@
   --background-end-rgb: 17, 24, 39;
 }
 
-/* Component Background Styles */
+/**
+ * Glass Effect Components
+ * Reusable glass morphism styles for various UI elements
+ */
+
+/* Base glass effect with blur and border */
 .glass-effect {
   @apply backdrop-blur-md border border-gray-800/50 transition-all duration-300;
 }
 
+/* Glass panel with hover effects */
 .glass-panel {
   @apply bg-gray-900/30 glass-effect hover:border-gray-700/50;
 }
 
+/* Glass panel with scale and shadow hover effects */
 .glass-panel-hover {
   @apply glass-panel hover:bg-gray-800/40 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98];
 }
 
+/* Darker glass panel variant */
 .glass-panel-darker {
   @apply bg-gray-900/50 glass-effect hover:bg-gray-900/60 hover:border-gray-700/50;
 }
 
+/* Lighter glass panel variant */
 .glass-panel-lighter {
   @apply bg-gray-800/20 glass-effect hover:bg-gray-800/30 hover:border-gray-700/50;
 }
 
+/* Glass card with rounded corners and shadow */
 .glass-card {
   @apply glass-panel rounded-lg shadow-lg hover:shadow-xl;
 }
 
+/* Glass card with hover animations */
 .glass-card-hover {
   @apply glass-card hover:bg-gray-800/40 hover:border-gray-700/50 hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0;
 }
 
+/* Glass form container */
 .glass-form {
   @apply glass-panel-darker rounded-lg p-6 hover:shadow-lg;
 }
 
+/* Glass input field styling */
 .glass-input {
   @apply bg-gray-800/30 backdrop-blur-sm border-gray-700/50 focus:border-gray-600/50 focus:ring-2 focus:ring-purple-500/50 transition-all duration-300;
 }
 
+/* Glass button styling */
 .glass-button {
   @apply glass-panel-hover rounded-lg shadow-md hover:shadow-lg active:scale-95 hover:-translate-y-0.5 active:translate-y-0;
 }
 
+/* Glass section container */
 .glass-section {
   @apply glass-panel rounded-xl p-6 shadow-lg hover:shadow-xl hover:bg-gray-800/40 hover:border-gray-700/50;
 }
 
-/* Interactive States */
+/**
+ * Interactive States
+ * Hover and active state animations
+ */
+
+/* Hover effect with scale and translation */
 .glass-hover-effect {
   @apply transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] active:translate-y-0;
 }
 
+/* Border glow effect on hover */
 .glass-border-glow {
   @apply hover:border-purple-500/30 hover:shadow-[0_0_15px_rgba(147,51,234,0.1)];
 }
 
+/* Text glow effect on hover */
 .glass-text-glow {
   @apply hover:text-white hover:shadow-[0_0_10px_rgba(255,255,255,0.2)];
 }
 
+/**
+ * Base Body Styles
+ * Sets up the main background gradient
+ */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -91,7 +136,10 @@ body {
   );
 }
 
-/* Animated background */
+/**
+ * Animated Background
+ * Creates a dynamic background with floating particles
+ */
 .animated-bg {
   position: fixed;
   inset: 0;
@@ -105,6 +153,7 @@ body {
   background: linear-gradient(to right, rgba(var(--primary), 0.2), rgba(var(--secondary), 0.2));
 }
 
+/* Floating animation for particles */
 @keyframes float {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -114,6 +163,7 @@ body {
   }
 }
 
+/* Pulse animation for elements */
 @keyframes pulse {
   0%,
   100% {
@@ -124,7 +174,10 @@ body {
   }
 }
 
-/* Animated Background */
+/**
+ * Gradient Background Animation
+ * Creates a smooth gradient transition effect
+ */
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
@@ -149,7 +202,10 @@ body {
   animation: gradientBG 15s ease infinite;
 }
 
-/* Progress Bar Animation */
+/**
+ * Progress Bar Animation
+ * Animated progress bar effect
+ */
 @keyframes progress {
   from {
     width: 0;
@@ -160,7 +216,10 @@ body {
   animation: progress 1s ease-out forwards;
 }
 
-/* Shimmer Effect */
+/**
+ * Shimmer Effect
+ * Loading state animation
+ */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -181,7 +240,10 @@ body {
   animation: shimmer 2s infinite;
 }
 
-/* Accessibility Improvements */
+/**
+ * Accessibility Improvements
+ * Disables animations for users who prefer reduced motion
+ */
 @media (prefers-reduced-motion: reduce) {
   .animated-gradient-bg,
   .shimmer,
@@ -194,7 +256,12 @@ body {
   }
 }
 
-/* Professional hover effects for leaderboard and analytics */
+/**
+ * Leaderboard and Analytics Styles
+ * Enhanced hover effects for data visualization components
+ */
+
+/* Leaderboard item hover effects */
 .leaderboard-item {
   @apply transition-all duration-300 ease-in-out;
 }
@@ -204,6 +271,7 @@ body {
   background: linear-gradient(to right, rgba(88, 28, 135, 0.1), rgba(126, 34, 206, 0.1));
 }
 
+/* Analytics card hover effects */
 .analytics-card {
   @apply transition-all duration-300 ease-in-out;
 }
@@ -214,7 +282,10 @@ body {
   border-color: rgba(139, 92, 246, 0.5);
 }
 
-/* Enhanced hover effects for profile stats */
+/**
+ * Profile Stats Styles
+ * Enhanced hover effects for profile statistics
+ */
 .stats-card {
   @apply transition-all duration-300 ease-in-out;
 }
@@ -225,7 +296,10 @@ body {
   border-color: rgba(139, 92, 246, 0.5);
 }
 
-/* Tab hover effects */
+/**
+ * Tab Styles
+ * Enhanced hover and active states for tab components
+ */
 .tab-trigger {
   @apply transition-all duration-300 ease-in-out;
 }
@@ -244,7 +318,7 @@ body {
   background: linear-gradient(to right, rgba(147, 51, 234, 0.6), rgba(168, 85, 247, 0.6));
 }
 
-/* Tab content hover effects */
+/* Tab content transitions */
 .tab-content {
   @apply transition-all duration-300 ease-in-out;
 }
