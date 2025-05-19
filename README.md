@@ -20,7 +20,9 @@ A modern and interactive trivia quiz application built with Next.js.
 
 ## Developer
 
-Created by [Afzal Basheer](https://github.com/Afzal74)
+Created by Afzal Basheer
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Afzal74)
 
 ## Getting Started
 
