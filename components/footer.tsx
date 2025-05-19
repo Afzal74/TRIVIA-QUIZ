@@ -28,7 +28,7 @@ export default function Footer() {
                 <Linkedin className="h-5 w-5" />
               </Link>
               <Link 
-                href="https://github.com/ASUS-AICS/trivia-quiz" 
+                href="https://github.com/Afzal74" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-gray-400 hover:text-white transition-colors" 
