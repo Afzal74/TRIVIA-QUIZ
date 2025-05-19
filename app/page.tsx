@@ -19,7 +19,19 @@ import { ArrowRight, Users, Brain, Trophy, Zap, BookOpen, FlaskRoundIcon as Flas
 import RulesSection from "@/components/home/rules-section"
 import { useTheme } from "@/components/theme-provider"
 
-// Mock room data
+/**
+ * Room Interface
+ * Defines the structure of a quiz room with its properties:
+ * - active: Whether the room is currently active
+ * - players: Number of human players
+ * - bots: Number of AI players
+ * - difficulty: Game difficulty level
+ * - category: Quiz category
+ * - questions: Array of quiz questions
+ * - currentRound: Current round number
+ * - maxRounds: Maximum number of rounds
+ * - status: Current room status
+ */
 interface Room {
   active: boolean
   players: number
@@ -32,6 +44,18 @@ interface Room {
   status: "waiting" | "playing" | "finished"
 }
 
+/**
+ * Question Interface
+ * Defines the structure of a quiz question with its properties:
+ * - id: Unique identifier
+ * - type: Question type (single/multiple choice or reorder)
+ * - category: Question category
+ * - difficulty: Question difficulty level
+ * - question: The actual question text
+ * - options: Available answer options
+ * - correctAnswer: Correct answer(s)
+ * - timeLimit: Time limit in seconds
+ */
 interface Question {
   id: string
   type: "single" | "multiple" | "reorder"
@@ -43,7 +67,7 @@ interface Question {
   timeLimit: number
 }
 
-// Mock questions data
+// Mock questions data for testing and development
 const MOCK_QUESTIONS: Question[] = [
   {
     id: "q1",
@@ -82,6 +106,7 @@ const MOCK_QUESTIONS: Question[] = [
   }
 ]
 
+// Mock room data for testing and development
 const MOCK_ROOMS: Record<string, Room> = {
   "ABC123": {
     active: true,
@@ -118,7 +143,12 @@ const MOCK_ROOMS: Record<string, Room> = {
   }
 }
 
-// Helper function to shuffle array
+/**
+ * Helper function to shuffle array elements
+ * Used for randomizing question order
+ * @param array - The array to shuffle
+ * @returns A new array with shuffled elements
+ */
 function shuffleArray<T>(array: T[]): T[] {
   const newArray = [...array]
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -128,27 +158,35 @@ function shuffleArray<T>(array: T[]): T[] {
   return newArray
 }
 
+/**
+ * HomePage Component
+ * 
+ * Main landing page of the application with features:
+ * - Room creation and joining
+ * - Username management
+ * - Game settings configuration
+ * - Recent winners display
+ * - Game rules and analytics
+ */
 export default function HomePage() {
+  // State management for room and user settings
   const [roomCode, setRoomCode] = useState("")
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [isCreating, setIsCreating] = useState(false)
   const [difficulty, setDifficulty] = useState<"easy" | "average" | "hard">("average")
   const [subject, setSubject] = useState<string>("all")
-  
-  // Debug state changes
-  useEffect(() => {
-    console.log('Current subject:', subject);
-  }, [subject])
   const [isLoading, setIsLoading] = useState(false)
   const [numBots, setNumBots] = useState(0)
   const [maxRounds, setMaxRounds] = useState(10)
+
+  // Hooks for routing, audio, toast notifications, and theme
   const router = useRouter()
   const { playSound } = useAudio()
   const { toast } = useToast()
   const { colors } = useTheme()
 
-  // Generate a username if none exists
+  // Initialize username and play background music on component mount
   useEffect(() => {
     const storedUsername = localStorage.getItem("quizverse-username")
     if (storedUsername) {
@@ -163,7 +201,7 @@ export default function HomePage() {
     playSound("background", true)
   }, [playSound])
 
-  // Debug state changes
+  // Debug logging for state changes
   useEffect(() => {
     console.log("Username changed:", username)
   }, [username])
@@ -172,6 +210,9 @@ export default function HomePage() {
     console.log("Room code changed:", roomCode)
   }, [roomCode])
 
+  /**
+   * Handlers for user input changes
+   */
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     console.log("Username input:", value)
@@ -186,11 +227,16 @@ export default function HomePage() {
     setError("")
   }
 
+  /**
+   * Handle joining an existing room
+   * Validates inputs and checks room availability
+   */
   const handleJoinRoom = () => {
     setError("")
     setIsLoading(true)
     playSound("click")
 
+    // Input validation
     if (!roomCode.trim()) {
       setError("Please enter a room code")
       playSound("error")
@@ -205,7 +251,7 @@ export default function HomePage() {
       return
     }
 
-    // Mock room validation
+    // Mock room validation with simulated network delay
     setTimeout(() => {
       const room = MOCK_ROOMS[roomCode]
       if (!room) {
@@ -227,11 +273,11 @@ export default function HomePage() {
         setError("Room is full (max 15 participants)")
         playSound("error")
         setIsLoading(false)
-      return
-    }
+        return
+      }
 
-    // Store username in localStorage
-    localStorage.setItem("quizverse-username", username)
+      // Store username in localStorage
+      localStorage.setItem("quizverse-username", username)
 
       // Show success toast
       toast({
@@ -240,9 +286,9 @@ export default function HomePage() {
       })
 
       // Navigate to the lobby
-    router.push(
-      `/lobby?code=${roomCode}&username=${encodeURIComponent(username)}&difficulty=${difficulty}&subject=${subject}`,
-    )
+      router.push(
+        `/lobby?code=${roomCode}&username=${encodeURIComponent(username)}&difficulty=${difficulty}&subject=${subject}`,
+      )
     }, 1000) // Simulate network delay
   }
 
