@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Mail, Trophy, Github, Phone, Linkedin, Twitter, Instagram } from "lucide-react"
+import { Mail, Trophy, Github, Phone, Linkedin } from "lucide-react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -14,22 +14,10 @@ const socialLinks = [
     href: "https://github.com/Afzal74",
     icon: Github,
   },
-  {
-    name: "Twitter",
-    href: "https://twitter.com/afzal_basheer",
-    icon: Twitter,
-  },
-  {
-    name: "Instagram",
-    href: "https://instagram.com/afzal_basheer",
-    icon: Instagram,
-  },
 ]
 
 const quickLinks = [
   { name: "Home", href: "/" },
-  { name: "Practice", href: "/practice" },
-  { name: "Multiplayer", href: "/create-room" },
   { name: "Profile", href: "/profile" },
   { name: "About", href: "/about" },
 ]
