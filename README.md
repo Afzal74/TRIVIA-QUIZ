@@ -84,5 +84,5 @@ MIT License - feel free to use this project for your own purposes.
 
 ## Acknowledgments
 
-- Thanks to all contributors who have helped shape this project
+- Cusor IDE is one of the best IDE so far
 - Special thanks to the Next.js and Tailwind CSS communities 
