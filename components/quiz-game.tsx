@@ -6,6 +6,7 @@ import { mockQuestions } from "@/data/mock-questions"
 import QuizLeaderboard from "./quiz-leaderboard"
 import { CheckCircle2, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useAudio } from "@/lib/audio"
 
 interface Player {
   id: string
@@ -33,6 +34,7 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
   const [showExplanation, setShowExplanation] = useState(false)
   const [quizEndedEarly, setQuizEndedEarly] = useState(false)
   const router = useRouter()
+  const { playSoundEffect, playBackgroundMusic, stopBackgroundMusic } = useAudio()
 
   // Get time limit based on difficulty
   const getTimeLimit = (diff: string) => {
@@ -72,9 +74,15 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
       const timer = setTimeout(() => {
         setShowLeaderboard(true);
         setShowExplanation(false);
-        // If it's the last question, set game as ended
+        
+        // Play standings sound when showing leaderboard
+        playSoundEffect('standings');
+        
+        // If it's the last question, set game as ended and play congratulations
         if (isLastQuestion) {
           setGameEnded(true);
+          // Play congratulations sound immediately when game ends
+          playSoundEffect('congratulations');
         } else {
           // Auto proceed to next question after 4 seconds of showing leaderboard
           const nextQuestionTimer = setTimeout(() => {
@@ -91,11 +99,23 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
     }
   }, [answerSubmitted, isLastQuestion]);
 
+  useEffect(() => {
+    playBackgroundMusic()
+    return () => stopBackgroundMusic()
+  }, [])
+
   const handleAnswerSelect = (answer: string) => {
     if (answerSubmitted) return;
     
     setSelectedAnswer(answer);
     setAnswerSubmitted(true);
+
+    // Play sound effect immediately when answer is selected
+    if (answer === currentQuestion.correctAnswer) {
+      playSoundEffect('correct');
+    } else {
+      playSoundEffect('wrong');
+    }
 
     // Update player scores - double points for last question
     const pointsForQuestion = isLastQuestion ? 200 : 100;
@@ -127,7 +147,17 @@ export default function QuizGame({ players: initialPlayers, category, difficulty
     setQuizEndedEarly(true);
     setGameEnded(true);
     router.push("/"); // Redirect to home immediately
+    playSoundEffect('gameEnd')
   };
+
+  useEffect(() => {
+    if (timeLimit > 0) {
+      const timer = setInterval(() => {
+        playSoundEffect('tick')
+      }, 1000)
+      return () => clearInterval(timer)
+    }
+  }, [timeLimit])
 
   return (
     <div className="max-w-4xl mx-auto p-6">
