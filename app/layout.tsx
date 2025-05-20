@@ -6,6 +6,7 @@ import { AudioProvider } from "@/components/audio-provider"
 import AnimatedBackground from "@/components/animated-background"
 import { Toaster } from "@/components/ui/toaster"
 import Header from "@/components/header"
+import { AudioControls } from "@/components/audio-controls"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -59,6 +60,7 @@ export default function RootLayout({
             </main>
             {/* Toast notifications container */}
             <Toaster />
+            <AudioControls />
           </AudioProvider>
         </ThemeProvider>
       </body>
