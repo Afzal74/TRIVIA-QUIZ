@@ -14,6 +14,7 @@ A modern and interactive trivia quiz application built with Next.js.
 - Score sharing on social media
 - Customizable quiz settings
 - Offline support with PWA capabilities
+- Smooth transitions
 
 ## Tech Stack
 
